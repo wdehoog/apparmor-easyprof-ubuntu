@@ -18,6 +18,8 @@ dbus (receive)
      bus=session
      interface=com.canonical.applications.Download{,er}Manager,
 # Restrict apps to just their own downloads
+owner @{HOME}/.local/share/ubuntu-download-manager/@{APP_PKGNAME}/   rw,
+owner @{HOME}/.local/share/ubuntu-download-manager/@{APP_PKGNAME}/** rwk,
 dbus (receive, send)
      bus=session
      path=/com/canonical/applications/download/@{APP_ID_DBUS}/**

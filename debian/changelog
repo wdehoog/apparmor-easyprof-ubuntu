@@ -1,3 +1,10 @@
+apparmor-easyprof-ubuntu (1.2.38) UNRELEASED; urgency=medium
+
+  * ubuntu/networking: add rules for app-specific ubuntu-download-manager
+    file downloads (LP: #1384349)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 22 Oct 2014 14:13:44 -0400
+
 apparmor-easyprof-ubuntu (1.2.37) utopic; urgency=medium
 
   * ubuntu/audio: also allow access to GetArtistArt when accessing the
