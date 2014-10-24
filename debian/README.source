@@ -1,0 +1,8 @@
+In Ubuntu, we will use MAJOR.MINOR for the policy version, ignoring MICRO.
+Therefore, this package uses a version number of 1.0.0 for the initial release
+and ships policy in ubuntu/1.0. The 1.0.1 release will make changes to
+ubuntu/1.0 while 1.1.0 will start shipping policy for ubuntu/1.1.
+
+When adding templates and policy groups, you should also adjust the
+debian/tests/installed_* autopkgtest scripts. This should also be done when
+adding new policy groups and templates.

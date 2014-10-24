@@ -1,0 +1,38 @@
+# Description: Can access coarse network connectivity information
+# Usage: common
+# APIs: QtSystemInfo::NetworkInfo, QHostAddress and QNetworkInterface
+/sys/class/net/ r,
+/sys/devices/**/net/*/carrier r,
+@{PROC}/[0-9]*/net/wireless r,
+
+# Most apps that need connectivity will also have networking, but just in case
+# only connectivity is needed, add these.
+network stream,
+network udp,
+
+# Don't allow the MAC. Perhaps this will be allowed in another policy group
+#/sys/devices/**/net/*/address r, # MAC
+
+# QtSystemInfo::NetworkInfo throws an error on systems with ofono. These
+# are the DBus calls that allow QtSystemInfo::NetworkInfo to work, but reveal
+# too much information. For now, leave the rules commented out and when
+# LP: #1226844 is fixed, we can see how to proceed
+#
+#dbus (send)
+#     bus=system
+#     path=/
+#     interface=org.ofono.Manager
+#     member=GetModems
+#     peer=(name=org.ofono),
+#dbus (send)
+#     bus=system
+#     path=/ril_*
+#     interface=org.ofono.NetworkRegistration
+#     member=GetProperties
+#     peer=(name=org.ofono),
+#dbus (receive)
+#     bus=system
+#     path=/ril_*
+#     interface=org.ofono.NetworkRegistration
+#     member=PropertyChanged
+#     peer=(name=org.freedesktop.DBus),

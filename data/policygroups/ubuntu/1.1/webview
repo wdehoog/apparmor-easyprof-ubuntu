@@ -1,0 +1,162 @@
+# Description: Can use the UbuntuWebview
+# Usage: common
+
+  # UbuntuWebview
+  /usr/share/qtdeclarative5-ubuntu-ui-extras-browser-plugin/ r,
+  /usr/share/qtdeclarative5-ubuntu-ui-extras-browser-plugin/** r,
+  /usr/share/qtdeclarative5-ubuntu-web-plugin/ r,
+  /usr/share/qtdeclarative5-ubuntu-web-plugin/** r,
+
+  ptrace (read, trace) peer=@{profile_name},
+  signal peer=@{profile_name}//oxide_helper,
+
+  # Allow communicating with sandbox
+  unix (receive, send) peer=(label=@{profile_name}//oxide_helper),
+
+  # LP: #1260090 - when this bug is fixed, oxide_renderer can become a
+  # child profile of this profile, then we'll use Cx here and Px in
+  # chrome_sandbox. Ideally, chrome-sandbox and oxide-renderer would ship
+  # as standalone profiles and we would just Px/px to them, but this is not
+  # practical because oxide-renderer needs to access app-specific files
+  # and shm files (when 1260103 is fixed). For now, have a single helper
+  # profile for chrome-sandbox and oxide-renderer.
+  /usr/lib/@{multiarch}/oxide-qt/oxide-renderer Cxmr -> oxide_helper,
+  /usr/lib/@{multiarch}/oxide-qt/chrome-sandbox cxmr -> oxide_helper,
+
+  /usr/lib/@{multiarch}/oxide-qt/* r,
+  @{PROC}/[0-9]*/task/[0-9]*/stat r,
+
+  # LP: #1275917 (not a problem, but unnecessary)
+  /usr/share/glib-2.0/schemas/gschemas.compiled r,
+
+  # LP: #1260044
+  deny /usr/lib/@{multiarch}/qt5/bin/locales/ w,
+  deny /usr/bin/locales/ w,
+
+  # LP: #1260101
+  deny /run/user/[0-9]*/dconf/user rw,
+  deny owner @{HOME}/.config/dconf/user r,
+  deny /custom/etc/dconf_profile r,
+
+  # LP: #1357371 (webapp-container needs corresponding 'bind' call on
+  # org.freedesktop.Application, which we block elsewhere. webapp-container
+  # shouldn't be doing this under confinement, but we allow this rule in
+  # content_exchange, so just allow it to avoid confusion)
+  dbus (send)
+       bus=session
+       path=/org/freedesktop/DBus
+       interface=org.freedesktop.DBus
+       member=RequestName,
+
+  # LP: #1260048 - only allow 'r' for now, since 'w' allow for db poisoning
+  owner @{HOME}/.pki/nssdb/ r,
+  owner @{HOME}/.pki/nssdb/** rk,
+  deny @{HOME}/.pki/nssdb/ w,
+  deny @{HOME}/.pki/nssdb/** w,
+
+  # LP: #
+  /sys/bus/pci/devices/ r,
+  /sys/devices/pci[0-9]*/**/class r,
+  /sys/devices/pci[0-9]*/**/device r,
+  /sys/devices/pci[0-9]*/**/irq r,
+  /sys/devices/pci[0-9]*/**/resource r,
+  /sys/devices/pci[0-9]*/**/vendor r,
+  /sys/devices/pci[0-9]*/**/removable r,
+  /sys/devices/pci[0-9]*/**/uevent r,
+  /sys/devices/pci[0-9]*/**/block/**/size r,
+  /etc/udev/udev.conf r,
+
+  # LP: #1260098
+  /tmp/ r,
+  /var/tmp/ r,
+
+  # LP: #1260103
+  owner /run/shm/.org.chromium.Chromium.* rwk,
+
+  # LP: #1260090 - when this bug is fixed, oxide_renderer can become a
+  # child profile of this profile, then we can use Cx here and Px in
+  # chrome_sandbox. Ideally, chrome-sandbox and oxide-renderer would ship
+  # as standalone profiles and we would just Px/px to them, but this is not
+  # practical because oxide-renderer needs to access app-specific files
+  # and shm files (when 1260103 is fixed). For now, have a single helper
+  # profile for chrome-sandbox and oxide-renderer.
+  profile oxide_helper (attach_disconnected) {
+    #
+    # Shared by chrome-sandbox and oxide-helper
+    #
+    #include <abstractions/base>
+
+    # So long as we don't give /dev/binder, this should be 'ok'
+    /{,android/}vendor/lib/*.so        mr,
+    /{,android/}system/lib/*.so        mr,
+    /{,android/}system/vendor/lib/*.so mr,
+    /{,android/}system/build.prop      r,
+    /dev/socket/property_service rw, # attach_disconnected path
+
+    @{PROC}/ r,
+    @{PROC}/[0-9]*/ r,
+    @{PROC}/[0-9]*/fd/ r,
+    @{PROC}/[0-9]*/auxv r,
+    owner @{PROC}/[0-9]*/status r,
+    owner @{PROC}/[0-9]*/task/ r,
+    owner @{PROC}/[0-9]*/task/[0-9]*/stat r,
+
+    #
+    # chrome-sandbox specific
+    #
+    # Required for dropping into PID namespace. Keep in mind that until the
+    # process drops this capability it can escape confinement, but once it
+    # drops CAP_SYS_ADMIN we are ok.
+    capability sys_admin,
+
+    # All of these are for sanely dropping from root and chrooting
+    capability chown,
+    capability fsetid,
+    capability setgid,
+    capability setuid,
+    capability dac_override,
+    capability dac_read_search,
+    capability sys_chroot,
+
+    capability sys_ptrace,
+    ptrace (read, readby),
+    signal peer=@{APP_PKGNAME}_@{APP_APPNAME}_@{APP_VERSION},
+
+    unix peer=(label=@{APP_PKGNAME}_@{APP_APPNAME}_@{APP_VERSION}),
+    unix (create),
+    unix peer=(label=@{profile_name}),
+    unix (getattr, getopt, setopt, shutdown),
+
+    # LP: #1260115
+    deny @{PROC}/[0-9]*/oom_adj w,
+    deny @{PROC}/[0-9]*/oom_score_adj w,
+
+    /usr/lib/@{multiarch}/oxide-qt/oxide-renderer rmix,
+
+    #
+    # oxide-renderer specific
+    #
+    #include <abstractions/fonts>
+    @{PROC}/sys/kernel/shmmax r,
+    @{PROC}/sys/kernel/yama/ptrace_scope r,
+    deny /etc/passwd r,
+    deny /tmp/ r,
+    deny /var/tmp/ r,
+
+    /usr/lib/@{multiarch}/oxide-qt/chrome-sandbox rmix,
+
+    # The renderer may need access to app-specific files, such as WebCore
+    # databases
+    owner @{HOME}/.local/share/@{APP_PKGNAME}/   rw,
+    owner @{HOME}/.local/share/@{APP_PKGNAME}/** mrwkl,
+
+    # LP: #1260103
+    /run/shm/.org.chromium.Chromium.* rwk,
+
+    # LP: #1260048
+    owner @{HOME}/.pki/nssdb/ rw,
+    owner @{HOME}/.pki/nssdb/** rwk,
+
+    # LP: #1260044
+    deny /usr/lib/@{multiarch}/oxide-qt/locales/ w,
+  }

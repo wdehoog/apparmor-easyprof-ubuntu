@@ -1,0 +1,2 @@
+  # FIXME: LP: #1197134 - remove this once we migrate away from surface flinger
+  /dev/binder rw,

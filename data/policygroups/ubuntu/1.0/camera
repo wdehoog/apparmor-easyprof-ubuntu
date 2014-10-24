@@ -1,0 +1,33 @@
+# Description: Can access the camera(s)
+# Usage: common
+# android-based access. Remove once move away from binder (LP: #1197134)
+/dev/binder rw,
+/dev/ashmem rw,
+/android/system/media/audio/ui/camera_click.ogg r,
+
+# Pipe to pulseaudio for recording audio via qtubuntu-camera library. This is
+# safe to allow to all apps because background recording can't be triggered via
+# this pipe. Other processes could interfere with the recording process however
+# (LP: #1340345), but that is true of pulseaudio now, which we currently allow
+# in the audio policy group.
+/dev/socket/micshm w,
+
+# converged desktop
+#include <abstractions/video>
+/dev/                               r, # TODO: maybe allow this?
+/dev/video*                         rw,
+/sys/devices/**/video4linux/video** r,
+/sys/devices/**/modalias            r,
+/sys/devices/**/speed               r,
+
+# These disclose the device to the app
+deny /sys/devices/virtual/dmi/id/* r,
+
+# Use of the camera currently requires access to media-hub for the 'click'
+# camera sound. In the future, the click camera sound will be moved outside of
+# qtubuntu-camera. The camera service is moving to media-hub anyway. When it
+# does this rule can be less general. When the 'click' sound moves, apps can
+# opt into it and use the audio policy group. (LP: #1369512)
+dbus (receive, send)
+     bus=session
+     path=/core/ubuntu/media/Service{,/**},

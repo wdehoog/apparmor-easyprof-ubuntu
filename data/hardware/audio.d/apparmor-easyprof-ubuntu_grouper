@@ -1,0 +1,3 @@
+  # Nexus7 (grouper)
+  /dev/tegra_avpchannel rw,
+  /sys/module/fuse/parameters/tegra* r,

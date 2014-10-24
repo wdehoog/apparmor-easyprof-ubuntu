@@ -1,0 +1,18 @@
+# Description: Can access contacts. This policy group is reserved for vetted
+#  applications only in this version of the policy. Once LP: #1227821 is
+#  fixed, this can be moved out of reserved status.
+# Usage: reserved
+dbus (receive, send)
+     bus=session
+     path=/com/canonical/pim/AddressBook,
+dbus (receive, send)
+     bus=session
+     path=/com/canonical/pim/AddressBookView/**,
+
+# LP: #1319546. Apps shouldn't talk directly to sync-monitor, but allow it for
+# now for trusted apps until sync-monitor is integrated with push
+# notifications. IMPORTANT: this policy group cannot be moved to 'common'
+# status until this rule is removed.
+dbus (receive, send)
+     bus=session
+     path=/com/canonical/SyncMonitor{,/**},

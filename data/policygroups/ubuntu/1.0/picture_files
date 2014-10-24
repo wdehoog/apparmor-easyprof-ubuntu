@@ -1,0 +1,7 @@
+# Description: Can read and write to picture files. This policy group is
+#  reserved for certain applications, such as gallery applications.
+#  Developers should typically use the content_exchange policy group and
+#  API to access picture files instead.
+# Usage: reserved
+owner @{HOME}/Pictures/   r,
+owner @{HOME}/Pictures/** rwk,

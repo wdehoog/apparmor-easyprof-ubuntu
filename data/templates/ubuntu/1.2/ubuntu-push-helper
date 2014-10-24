@@ -1,0 +1,98 @@
+#
+# Example usage for an ubuntu-push-helper app 'appname'
+# $ aa-easyprof --template=ubuntu-push-helper \
+#               --profile-name=com.example.appname \
+#               -p networking \
+#               --template-var="@{APP_PKGNAME}=appname" \
+#               --template-var="@{APP_VERSION}=0.1" \
+#               "/usr/share/appname/**"
+#
+###ENDUSAGE###
+# vim:syntax=apparmor
+
+#include <tunables/global>
+
+###VAR###
+
+###PROFILEATTACH### {
+  #include <abstractions/base>
+
+  # Apps fail to start when linked against newer curl/gnutls if we don't allow
+  # this. (LP: #1350152)
+  #include <abstractions/openssl>
+
+  # Allow connecting to session bus and where to connect to services
+  #include <abstractions/dbus-session-strict>
+
+  # Deny potentially dangerous access
+  deny dbus bus=session
+            path=/com/canonical/[Uu]nity/[Dd]ebug**,
+  audit deny dbus bus=session
+                  interface="com.canonical.snapdecisions",
+  deny dbus (send)
+       bus=session
+       interface="org.gnome.GConf.Server",
+
+  # Push helpers shouldn't have access to the clipboard (LP: #1371170)
+  audit deny dbus (receive, send)
+       bus=session
+       path="/com/canonical/QtMir/Clipboard",
+
+  # Push helpers shouldn't use URL dispatcher directly
+  audit deny dbus (send)
+       bus=session
+       path="/com/canonical/URLDispatcher"
+       interface="com.canonical.URLDispatcher"
+       member="DispatchURL",
+
+  # Don't allow apps to access scope endpoints
+  audit deny /run/user/[0-9]*/zmq/   rw,
+  audit deny /run/user/[0-9]*/zmq/** rwk,
+
+  # Explicitly deny dangerous access
+  audit deny /dev/input/** rw,
+  deny /dev/fb0 rw, # don't use 'audit' since it is too noisy with the camera
+
+  # Lttng tracing. Can safely deny. LP: #1260491
+  deny /{,var/}run/shm/lttng-ust-* r,
+
+  #
+  # Application install dirs
+  #
+
+  # Click packages
+  @{CLICK_DIR}/@{APP_PKGNAME}/                   r,
+  @{CLICK_DIR}/@{APP_PKGNAME}/@{APP_VERSION}/    r,
+  @{CLICK_DIR}/@{APP_PKGNAME}/@{APP_VERSION}/**  mrklix,
+
+  # Packages shipped as debs have their install directory in /usr/share
+  /usr/share/@{APP_PKGNAME}/ r,
+  /usr/share/@{APP_PKGNAME}/** mrklix,
+
+  #
+  # Application writable dirs
+  #
+  # Allow writes to various (application-specific) XDG directories
+  owner @{HOME}/.cache/@{APP_PKGNAME}/                  rw,      # subdir of XDG_CACHE_HOME
+  owner @{HOME}/.cache/@{APP_PKGNAME}/**                mrwkl,
+  owner @{HOME}/.config/@{APP_PKGNAME}/                 rw,      # subdir of XDG_CONFIG_HOME
+  owner @{HOME}/.config/@{APP_PKGNAME}/**               mrwkl,
+  owner @{HOME}/.local/share/@{APP_PKGNAME}/            rw,      # subdir of XDG_DATA_HOME
+  owner @{HOME}/.local/share/@{APP_PKGNAME}/**          mrwklix,
+  owner /{,var/}run/user/*/@{APP_PKGNAME}/              rw,      # subdir of XDG_RUNTIME_DIR
+  owner /{,var/}run/user/*/@{APP_PKGNAME}/**            mrwkl,
+  owner /{,var/}run/user/*/confined/@{APP_PKGNAME}/     rw,      # subdir of XDG_RUNTIME_DIR (for TMPDIR)
+  owner /{,var/}run/user/*/confined/@{APP_PKGNAME}/**   mrwkl,
+
+  # Allow writes to application-specific QML cache directories
+  owner @{HOME}/.cache/QML/Apps/@{APP_PKGNAME}_@{APP_APPNAME}_@{APP_VERSION}/   rw,
+  owner @{HOME}/.cache/QML/Apps/@{APP_PKGNAME}_@{APP_APPNAME}_@{APP_VERSION}/** mrwkl,
+
+  ###ABSTRACTIONS###
+
+  ###POLICYGROUPS###
+
+  ###READS###
+
+  ###WRITES###
+}

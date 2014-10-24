@@ -1,0 +1,7 @@
+# Description: Can read all video files. This policy group is reserved
+#  for certain applications, such as video players. Developers should
+#  typically use the content_exchange policy group and API to access
+#  video files instead.
+# Usage: reserved
+owner @{HOME}/Videos/   r,
+owner @{HOME}/Videos/** r,

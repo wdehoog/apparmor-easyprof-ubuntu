@@ -1,0 +1,3 @@
+  # Nexus 10 (manta)
+  /dev/mali[0-9] rw,
+  /dev/ion rw,

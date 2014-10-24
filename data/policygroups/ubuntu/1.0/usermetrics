@@ -1,0 +1,6 @@
+# Description: Can use UserMetrics to update the InfoGraphic
+# Usage: common
+dbus (send)
+    bus=system
+    path=/com/canonical/UserMetrics**
+    peer=(name=com.canonical.UserMetrics),

@@ -1,0 +1,64 @@
+#!/bin/sh
+# Author: Jamie Strandboge <jamie@ubuntu.com>
+# Copyright (C) 2014 Canonical Ltd.
+#
+# This script is distributed under the terms and conditions of the GNU General
+# Public License, Version 3 or later. See http://www.gnu.org/copyleft/gpl.html
+# for details.
+set -e
+
+# Note, we don't need to run apparmor_parser because aa-easyprof will do that
+# for us if apparmor_parser is found
+
+rc="0"
+
+expected_templates_10="default ubuntu-sdk ubuntu-webapp unconfined"
+expected_templates_11="$expected_templates_10" # no new templates over 1.0
+# ubuntu-scope-local-content is no longer shipped
+#expected_templates_12="default ubuntu-scope-network ubuntu-scope-local-content ubuntu-sdk ubuntu-webapp unconfined"
+expected_templates_12="default ubuntu-push-helper ubuntu-scope-network ubuntu-sdk ubuntu-webapp unconfined"
+
+for v in 1.0 1.1 1.2 ; do
+    expected_templates="$expected_templates_10"
+    if [ "$v" = "1.1" ]; then
+        expected_templates="$expected_templates_11"
+    elif [ "$v" = "1.2" ]; then
+        expected_templates="$expected_templates_12"
+    fi
+    tmp=`aa-easyprof --list-templates --policy-vendor=ubuntu --policy-version=$v`
+    for p in $expected_templates ; do
+        found=""
+        for i in $tmp ; do
+            if [ "$p" = "$i" ]; then
+                found="yes"
+                continue
+            fi
+        done
+        if [ -z "$found" ]; then
+            echo "Could not find '$p'" >&2
+            rc="1"
+        fi
+    done
+
+    unexpected=""
+    for p in $tmp ; do
+        found=""
+        for i in $expected_templates ; do
+            if [ "$p" = "$i" ]; then
+                found="yes"
+                continue
+            fi
+        done
+        if [ -z "$found" ]; then
+            echo "Found unexpected '$p'" >&2
+            rc="1"
+        fi
+    done
+done
+
+if [ "$rc" = "0" ]; then
+    echo "PASS"
+else
+    echo "FAIL"
+fi
+exit "$rc"

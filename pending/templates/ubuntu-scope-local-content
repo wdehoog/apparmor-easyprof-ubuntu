@@ -1,0 +1,133 @@
+# vim:syntax=apparmor
+
+#include <tunables/global>
+
+###VAR###
+
+###PROFILEATTACH### (attach_disconnected) {
+  #include <abstractions/base>
+  #include <abstractions/private-files-strict>
+
+  # Local content scopes are not allowed to talk to the network. Any network
+  # access must happen via the scopes-proxy (which is via the scopes
+  # endpoints)
+  audit deny network,
+
+  # libhybris
+  /{,var/}run/shm/hybris_shm_data rw, # FIXME: LP: #1226569 (make app-specific)
+  /usr/lib/@{multiarch}/libhybris/*.so mr,
+  /{,android/}system/build.prop r,
+  # These libraries can be in any of:
+  #  /vendor/lib
+  #  /system/lib
+  #  /system/vendor/lib
+  #  /android/vendor/lib
+  #  /android/system/lib
+  #  /android/system/vendor/lib
+  /{,android/}vendor/lib/**           r,
+  /{,android/}vendor/lib/**.so        m,
+  /{,android/}system/lib/**           r,
+  /{,android/}system/lib/**.so        m,
+  /{,android/}system/vendor/lib/**    r,
+  /{,android/}system/vendor/lib/**.so m,
+
+  # attach_disconnected path
+  /dev/socket/property_service rw,
+
+  # Add to abstractions?
+  @{PROC}/sys/net/core/somaxconn r,
+  /sys/devices/system/cpu/ r,
+
+  # Explicitly deny dangerous access
+  audit deny /dev/input/** rw,
+  deny /dev/fb0 rw, # don't use 'audit' since it is too noisy with the camera
+
+  # Scopes shouldn't use URL dispatcher directly
+  audit deny dbus (send)
+       bus=session
+       path="/com/canonical/URLDispatcher"
+       interface="com.canonical.URLDispatcher"
+       member="DispatchURL",
+
+  # Scopes shouldn't use the clipboard
+  audit deny dbus (receive, send)
+       bus=session
+       path="/com/canonical/QtMir/Clipboard",
+
+  # scopes-runner uses aa-getcon() to see if confined, so silence this denial
+  deny @{PROC}/[0-9]*/attr/current r,
+
+  #
+  # DBus rules common for all scopes
+  #
+  # Allow connecting to session bus and where to connect to services
+  #include <abstractions/dbus-session-strict>
+
+  # Allow connecting to system bus and where to connect to services. Put these
+  # here so we don't need to repeat these rules in multiple places (actual
+  # communications with any system services is mediated elsewhere). This does
+  # allow scopes to brute-force enumerate system services, but our system
+  # services aren't a secret.
+  #include <abstractions/dbus-strict>
+
+  #
+  # end DBus rules common for all scopes
+  #
+
+  # Click install directory
+  @{CLICK_DIR}/@{APP_PKGNAME}/                   r,
+  @{CLICK_DIR}/@{APP_PKGNAME}/@{APP_VERSION}/    r,
+  @{CLICK_DIR}/@{APP_PKGNAME}/@{APP_VERSION}/**  mrklix,
+
+  # Needed by .so scopes
+  /usr/lib/@{multiarch}/unity-scopes/scoperunner ixr,
+
+  # Scope settings are stored here and should not be writable by confined
+  # scopes
+  owner @{HOME}/.config/unity-scopes/@{APP_PKGNAME}_@{APP_APPNAME}/settings.ini* rk,
+
+  # Suppress noise due to scopes trying to create this directory to see if they
+  # are confined
+  deny @{HOME}/.local/share/unity-scopes/unconfined/@{APP_PKGNAME}/  rw,
+
+  # leaf scope with content permissions
+  owner @{HOME}/.local/share/unity-scopes/leaf-fs/@{APP_PKGNAME}/   rw,
+  owner @{HOME}/.local/share/unity-scopes/leaf-fs/@{APP_PKGNAME}/** mrwklix,
+  owner /run/user/[0-9]*/scopes/leaf-fs/@{APP_PKGNAME}_@{APP_APPNAME}/   rw,
+  owner /run/user/[0-9]*/scopes/leaf-fs/@{APP_PKGNAME}_@{APP_APPNAME}/** mrwkl,
+
+  # Public endpoints
+  # all scopes should be able to access the reply endpoints (the scopes-api
+  # protects against abuse, see LP: #1347177)
+  owner /run/user/[0-9]*/zmq/{[^c]**,c[^-]**}-r          rw,
+  # LP: #1326105
+  owner /run/user/[0-9]*/zmq/Registry-s                   rw,
+  owner /run/user/[0-9]*/zmq/Registry-p                    r,
+  owner /run/user/[0-9]*/zmq/c-[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]-r rw,
+
+  # Private endpoints
+  owner /run/user/[0-9]*/zmq/priv/@{APP_PKGNAME}_@{APP_APPNAME}          rw,
+  owner /run/user/[0-9]*/zmq/priv/@{APP_PKGNAME}_@{APP_APPNAME}-{c,q}    rw,
+
+  # Give broad filesystem access, being careful not to give access to endpoints
+  # in /run/user/[0-9]*/zmq or snooping other user's files
+  /                         r,
+  /**/                      r,
+  /{media,mnt,opt,srv}/**   r, # removable media
+  /{usr,var}/**             r, # some system files
+  owner @{HOME}/[^.]**      r, # all non-hidden files we own in $HOME
+  owner @{HOME}/.cache/**   r, # all application caches
+  owner @{HOME}/.config/**  r, # all application configs
+  # All application directories, but not @{HOME}/.local/share/unity-scopes/ so
+  # we don't fiddle with other scopes
+  # TODO: clean this up when we have regex support
+  owner @{HOME}/.local/share/{[^u]**,u[^n]**,un[^i]**,uni[^t]**,unit[^y]**,unity[^-]**,unity-[^s]**,unity-s[^c]**,unity-sc[^o]**,unity-sco[^p]**,unity-scop[^e]**,unity-scope[^s]**,unity-scopes[^/]**} r,
+
+  ###ABSTRACTIONS###
+
+  ###POLICYGROUPS###
+
+  ###READS###
+
+  ###WRITES###
+}

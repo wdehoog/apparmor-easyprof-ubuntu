@@ -1,0 +1,33 @@
+apparmor-easyprof-ubuntu
+------------------------
+
+This package install Ubuntu-specific policygroups and templates for easyprof in
+ /usr/share/apparmor/easyprof/policygroups/<vendor>/<version>
+ /usr/share/apparmor/easyprof/templates/<vendor>/<version>
+
+For example, in Ubuntu we have:
+ /usr/share/apparmor/easyprof/policygroups/ubuntu/1.0
+ /usr/share/apparmor/easyprof/templates/ubuntu/1.0
+
+To use with aa-easyprof, either specify on the command line the arguments
+'--policy-vendor=<vendor> --policy-version=<version>' or use in the security
+section of the JSON manifest file:
+  ...
+  "policy_version": "<version>",
+  "policy_vendor": "<vendor>"',
+  ...
+
+
+Usage
+-----
+Policy groups fall under different usage categories with most being available
+to all common application use cases. Some policy groups are 'reserved' for
+certain applications and their use may flag the application for review. Each
+policy group contains meta-information at the top of the file:
+
+# Description: this is a description of the policy group. Typically they are
+#  short and on one line, but may continue on multiple lines. If a policy
+#  group is reserved, it should be explained in the description.
+# Usage: common|reserved
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Thu, 05 Sep 2013 09:31:02 -0500

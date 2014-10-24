@@ -1,0 +1,21 @@
+# Description: Can provide/export data to other applications
+# Usage: common
+dbus (send)
+     bus=session
+     interface=org.freedesktop.DBus
+     path=/org/freedesktop/DBus
+     member=RequestName,
+dbus (bind)
+     bus=session
+     name=com.ubuntu.content.handler.@{APP_ID_DBUS},
+dbus (receive)
+     bus=session
+     path=/com/ubuntu/content/handler/@{APP_ID_DBUS}
+     interface=com.ubuntu.content.dbus.Handler,
+dbus (receive, send)
+     bus=session
+     interface=com.ubuntu.content.dbus.Transfer
+     path=/transfers/@{APP_ID_DBUS}/export/*,
+dbus (receive, send)
+     bus=session
+     interface=com.ubuntu.content.dbus.Service,

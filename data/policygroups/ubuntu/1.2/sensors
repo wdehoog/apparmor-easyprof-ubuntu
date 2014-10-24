@@ -1,0 +1,8 @@
+# Description: Can access the sensors
+# Usage: common
+
+# usensors
+dbus (send)
+     bus=session
+     path=/com/canonical/usensord/*
+     interface=com.canonical.usensord.*,

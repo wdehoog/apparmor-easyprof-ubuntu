@@ -1,0 +1,14 @@
+Source: apparmor-easyprof-ubuntu
+Section: admin
+Priority: optional
+Maintainer: Jamie Strandboge <jamie@ubuntu.com>
+Build-Depends: debhelper (>= 9), python3-minimal, apparmor-easyprof, apparmor
+Standards-Version: 3.9.3
+XS-Testsuite: autopkgtest
+
+Package: apparmor-easyprof-ubuntu
+Architecture: all
+Depends: ${misc:Depends}, apparmor (>= 2.8.96~2541-0ubuntu4~)
+Description: AppArmor easyprof templates for Ubuntu
+ Provides AppArmor easyprof templates and policygroups suitable for use with
+ the Ubuntu app ecosystem.

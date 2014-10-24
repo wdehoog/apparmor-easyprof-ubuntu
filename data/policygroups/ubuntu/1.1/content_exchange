@@ -1,0 +1,28 @@
+# Description: Can request/import data from other applications
+# Usage: common
+dbus (send)
+     bus=session
+     interface=org.freedesktop.DBus
+     path=/org/freedesktop/DBus
+     member=RequestName,
+dbus (bind)
+     bus=session
+     name=com.ubuntu.content.handler.@{APP_ID_DBUS},
+dbus (receive)
+     bus=session
+     path=/com/ubuntu/content/handler/@{APP_ID_DBUS}
+     interface=com.ubuntu.content.dbus.Handler,
+dbus (receive, send)
+     bus=session
+     interface=com.ubuntu.content.dbus.Transfer
+     path=/transfers/@{APP_ID_DBUS}/import/*,
+dbus (receive, send)
+     bus=session
+     interface=com.ubuntu.content.dbus.Service,
+
+# LP: #1293771
+# Since fd delegation doesn't exist in the form that we need it at this time,
+# content-hub will create hard links in ~/.cache/@{APP_PKGNAME}/HubIncoming/
+# for volatile data. As such, apps should not have write access to anything in
+# this directory otherwise they would be able to change the source content.
+deny @{HOME}/.cache/@{APP_PKGNAME}/HubIncoming/** w,

@@ -1,0 +1,16 @@
+#!/bin/sh -e
+set -e
+
+if [ "$1" = "configure" ] && which aa-clickhook >/dev/null 2>&1; then
+    echo "(may take a while)"
+
+    aa-clickhook -f && {
+        . /lib/apparmor/functions
+        # Discard the return code and just make sure the md5sums are updated
+        # so on next boot the upstart/initscript will have updated md5sums and
+        # won't clear out the cache. This does not affect system-image updates
+        # since /etc/system-image/writable-paths is configured to prefer the
+        # files on the device (and the apparmor upstart job handles this).
+        compare_and_save_debsums apparmor-easyprof-ubuntu || true
+    }
+fi

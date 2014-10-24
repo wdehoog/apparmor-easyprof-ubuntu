@@ -1,0 +1,57 @@
+# Description: Can play audio (allows playing remote content via media-hub)
+# Usage: common
+/dev/ashmem rw,
+
+# Don't include the audio abstraction and enforce use of pulse instead
+/etc/pulse/ r,
+/etc/pulse/* r,
+/{run,dev}/shm/                    r,  # could allow enumerating apps
+owner /{run,dev}/shm/pulse-shm*    rk,
+deny /{run,dev}/shm/pulse-shm*     w,  # deny unless we have to have it
+owner @{HOME}/.pulse-cookie        rk,
+owner @{HOME}/.pulse/              r,
+owner @{HOME}/.pulse/*             rk,
+owner /{,var/}run/user/*/pulse/       r,
+owner /{,var/}run/user/*/pulse/       w,   # shouldn't be needed, but rmdir fail otherwise
+owner /{,var/}run/user/*/pulse/native rwk, # cli and dbus-socket should not be
+                                           # used by confined apps
+owner @{HOME}/.config/pulse/cookie rk,
+
+# Force the use of pulseaudio and silence any denials for ALSA
+deny /usr/share/alsa/alsa.conf r,
+deny /dev/snd/ r,
+deny /dev/snd/* r,
+
+# Allow communications with media-hub
+dbus (receive, send)
+     bus=session
+     path=/core/ubuntu/media/Service{,/**},
+
+# Allow communications with thumbnailer for retrieving album art
+dbus (send)
+     bus=session
+     interface="org.freedesktop.DBus.Introspectable"
+     path="/com/canonical/Thumbnailer"
+     member="Introspect",
+dbus (send)
+     bus=session
+     path="/com/canonical/Thumbnailer"
+     member={GetAlbumArt,GetArtistArt},
+
+# Allow communications with mediascanner2
+dbus (send)
+     bus=session
+     path=/com/canonical/MediaScanner2
+     interface=com.canonical.MediaScanner2,
+dbus (receive)
+     bus=session
+     peer=(label=/usr/bin/mediascanner-service-2.0),
+
+# sound files on the device
+/usr/share/sounds/ r,
+/usr/share/sounds/** r,
+/custom/usr/share/sounds/ r,
+/custom/usr/share/sounds/** r,
+
+# Hardware-specific accesses
+#include "/usr/share/apparmor/hardware/audio.d"

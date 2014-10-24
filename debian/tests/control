@@ -1,0 +1,2 @@
+Tests: installed_policy_groups installed_templates
+Depends: @, apparmor, apparmor-easyprof

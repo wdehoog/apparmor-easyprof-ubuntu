@@ -1,0 +1,35 @@
+# Description: Can access Location
+# Usage: common
+# TODO: when implementation for LP: #1223371 and LP: #1223211 is finalized,
+# pick one of these
+# session bus (not currently used-- maybe with trust-store)
+dbus (send)
+     bus=session
+     path="/com/ubuntu/location/Service"
+     interface="com.ubuntu.location.Service"
+     peer=(name="com.ubuntu.location.Service"),
+dbus (receive)
+     bus=session
+     path="/com/ubuntu/location/Service",
+dbus (receive, send)
+     bus=session
+     interface="com.ubuntu.location.Service.Session",
+
+# system bus
+dbus (send)
+     bus=system
+     path=/org/freedesktop/DBus
+     interface=org.freedesktop.DBus
+     member=Hello
+     peer=(name=org.freedesktop.DBus),
+dbus (send)
+     bus=system
+     path="/com/ubuntu/location/Service"
+     interface="com.ubuntu.location.Service"
+     peer=(name="com.ubuntu.location.Service"),
+dbus (receive)
+     bus=system
+     path="/com/ubuntu/location/Service",
+dbus (receive, send)
+     bus=system
+     interface="com.ubuntu.location.Service.Session",

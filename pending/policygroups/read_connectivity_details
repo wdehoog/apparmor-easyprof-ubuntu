@@ -1,0 +1,123 @@
+# Description: Read network connectivity details to enumerate access points,
+#  fine grained network data, etc. Can access detailed information about
+#  connections. Currently it use NetworkManager which will reveal MAC
+#  addresses, SSIDs, etc. For now,  don't allow this access because it reveals
+#  to much. A future API may make this easier.
+# Usage: reserved
+
+# Allow the MAC. Perhaps this will be allowed in another policy group
+/sys/devices/**/net/*/address r, # MAC
+
+# NetworkManager accesses
+dbus (send)
+     bus=system
+     path=/org/freedesktop/NetworkManager
+     interface=org.freedesktop.DBus.Introspectable
+     member=Introspect
+     peer=(name=org.freedesktop.NetworkManager),
+dbus (send)
+     bus=system
+     path=/org/freedesktop/NetworkManager
+     interface=org.freedesktop.DBus.Properties
+     member=Get
+     peer=(name=org.freedesktop.NetworkManager),
+dbus (send)
+     bus=system
+     path=/org/freedesktop/NetworkManager
+     interface=org.freedesktop.NetworkManager
+     member=GetDevices
+     peer=(name=org.freedesktop.NetworkManager),
+dbus (receive)
+     bus=system
+     path=/org/freedesktop/NetworkManager
+     interface=org.freedesktop.NetworkManager
+     member=PropertiesChanged
+     peer=(name=org.freedesktop.DBus),
+
+# Get properties for all Devices
+dbus (send)
+     bus=system
+     path=/org/freedesktop/NetworkManager/Devices/*
+     interface=org.freedesktop.DBus.Introspectable
+     member=Introspect
+     peer=(name=org.freedesktop.NetworkManager),
+dbus (send)
+     bus=system
+     path=/org/freedesktop/NetworkManager/Devices/*
+     interface=org.freedesktop.DBus.Properties
+     member=Get
+     peer=(name=org.freedesktop.NetworkManager),
+
+# Wired
+dbus (receive)
+     bus=system
+     path=/org/freedesktop/NetworkManager/Devices/*
+     interface=org.freedesktop.NetworkManager.Device.Wired
+     member=PropertiesChanged
+     peer=(name=org.freedesktop.DBus),
+
+# Wireless
+dbus (send)
+     bus=system
+     path=/org/freedesktop/NetworkManager/Devices/*
+     interface=org.freedesktop.NetworkManager.Device.Wireless
+     member=GetAccessPoints
+     peer=(name=org.freedesktop.NetworkManager),
+dbus (receive)
+     bus=system
+     path=/org/freedesktop/NetworkManager/Devices/*
+     interface=org.freedesktop.NetworkManager.Device.Wireless
+     member=PropertiesChanged
+     peer=(name=org.freedesktop.DBus),
+dbus (receive)
+     bus=system
+     path=/org/freedesktop/NetworkManager/Devices/*
+     interface=org.freedesktop.NetworkManager.Device.Wireless
+     member=AccessPointAdded
+     peer=(name=org.freedesktop.DBus),
+dbus (receive)
+     bus=system
+     path=/org/freedesktop/NetworkManager/Devices/*
+     interface=org.freedesktop.NetworkManager.Device.Wireless
+     member=AccessPointRemoved
+     peer=(name=org.freedesktop.DBus),
+
+# Access Points
+dbus (send)
+     bus=system
+     path=/org/freedesktop/NetworkManager/AccessPoint/*
+     interface=org.freedesktop.DBus.Introspectable
+     member=Introspect
+     peer=(name=org.freedesktop.NetworkManager),
+dbus (send)
+     bus=system
+     path=/org/freedesktop/NetworkManager/AccessPoint/*
+     interface=org.freedesktop.DBus.Properties
+     member=Get
+     peer=(name=org.freedesktop.NetworkManager),
+dbus (receive)
+     bus=system
+     path=/org/freedesktop/NetworkManager/AccessPoint/*
+     interface=org.freedesktop.NetworkManager.AccessPoint
+     member=PropertiesChanged
+     peer=(name=org.freedesktop.DBus),
+
+# Active connections
+dbus (send)
+     bus=system
+     path=/org/freedesktop/NetworkManager/ActiveConnection/*
+     interface=org.freedesktop.DBus.Introspectable
+     member=Introspect
+     peer=(name=org.freedesktop.NetworkManager),
+dbus (send)
+     bus=system
+     path=/org/freedesktop/NetworkManager/ActiveConnection/*
+     interface=org.freedesktop.DBus.Properties
+     member=Get
+     peer=(name=org.freedesktop.NetworkManager),
+dbus (receive)
+     bus=system
+     path=/org/freedesktop/NetworkManager/ActiveConnection/*
+     interface=org.freedesktop.NetworkManager.Connection.Active
+     member=PropertiesChanged
+     peer=(name=org.freedesktop.DBus),

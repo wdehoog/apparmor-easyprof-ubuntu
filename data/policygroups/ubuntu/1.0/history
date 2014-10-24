@@ -1,0 +1,18 @@
+# Description: Can access the history-service. This policy group is reserved
+#  for vetted applications only in this version of the policy. A future
+#  version of the policy may move this out of reserved status.
+# Usage: reserved
+dbus (send)
+   bus=session
+   path=/com/canonical/HistoryService
+   peer=(name=com.canonical.HistoryService),
+dbus (receive)
+   bus=session
+   path=/com/canonical/HistoryService,
+dbus (send)
+   bus=session
+   path=/com/canonical/HistoryService/**
+   peer=(name=com.canonical.HistoryService),
+dbus (receive)
+   bus=session
+   path=/com/canonical/HistoryService/**,

@@ -1,0 +1,16 @@
+# Description: Can use push notifications as a client
+# Usage: common
+
+dbus (receive, send)
+     bus=session
+     interface=com.ubuntu.PushNotifications
+     path=/com/ubuntu/PushNotifications/@{APP_PKGNAME_DBUS}{,/**},
+
+dbus (receive, send)
+     bus=session
+     interface=com.ubuntu.Postal
+     path=/com/ubuntu/Postal/@{APP_PKGNAME_DBUS}{,/**},
+
+# Some push helpers are written in python. This isn't strictly allowed since
+# frameworks don't support yet, but silence these to avoid confusion
+deny /usr/local/lib/python*/** r,

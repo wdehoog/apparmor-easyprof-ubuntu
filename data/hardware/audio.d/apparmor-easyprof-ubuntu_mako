@@ -1,0 +1,3 @@
+  # Nexus 4 (mako)
+  /dev/msm_acdb rw,
+  /dev/msm_rtac rw,

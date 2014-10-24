@@ -1,0 +1,44 @@
+# Description: Can access contacts. This policy group is reserved for vetted
+#  applications only in this version of the policy. Once LP: #1227821 is
+#  fixed, this can be moved out of reserved status.
+# Usage: reserved
+dbus (receive, send)
+     bus=session
+     path=/com/canonical/pim/AddressBook,
+dbus (receive, send)
+     bus=session
+     path=/com/canonical/pim/AddressBookView/**,
+
+# FIXME: LP: #1227818. Clients shouldn't access Telepathy directly. Remove
+#        these when LP: #1227818 is fixed in address-book-app.
+dbus (send)
+     bus=session
+     path=/org/freedesktop/Telepathy/AccountManager
+     peer=(name=org.freedesktop.Telepathy.AccountManager),
+dbus (receive)
+     bus=session
+     path=/org/freedesktop/Telepathy/AccountManager,
+dbus (send)
+     bus=session
+     path=/org/freedesktop/Telepathy/ChannelDispatcher
+     peer=(name=org.freedesktop.Telepathy.ChannelDispatcher),
+dbus (receive)
+     bus=session
+     path=/org/freedesktop/Telepathy/ChannelDispatcher,
+dbus (send)
+     bus=session
+     path=/org/freedesktop/Telepathy/Account/**
+     member=Get{,All}
+     peer=(name=org.freedesktop.Telepathy.AccountManager),
+dbus (receive)
+     bus=session
+     path=/org/freedesktop/Telepathy/Account/**
+     member=Get{,All},
+
+# LP: #1319546. Apps shouldn't talk directly to sync-monitor, but allow it for
+# now for trusted apps until sync-monitor is integrated with push
+# notifications. IMPORTANT: this policy group cannot be moved to 'common'
+# status until this rule is removed.
+dbus (receive, send)
+     bus=session
+     path=/com/canonical/SyncMonitor{,/**},

@@ -1,0 +1,62 @@
+#!/bin/sh
+# Author: Jamie Strandboge <jamie@ubuntu.com>
+# Copyright (C) 2013 Canonical Ltd.
+#
+# This script is distributed under the terms and conditions of the GNU General
+# Public License, Version 3 or later. See http://www.gnu.org/copyleft/gpl.html
+# for details.
+set -e
+
+# Note, we don't need to run apparmor_parser because aa-easyprof will do that
+# for us if apparmor_parser is found
+
+rc="0"
+
+expected_policy_groups_10="accounts audio calendar camera connectivity contacts content_exchange content_exchange_source friends history location microphone music_files music_files_read networking picture_files picture_files_read sensors usermetrics video video_files video_files_read"
+expected_policy_groups_11="accounts audio calendar camera connectivity contacts content_exchange content_exchange_source debug friends history location microphone music_files music_files_read networking picture_files picture_files_read sensors usermetrics video video_files video_files_read webview"
+expected_policy_groups_12="accounts audio calendar camera connectivity contacts content_exchange content_exchange_source debug history location microphone music_files music_files_read networking picture_files picture_files_read push-notification-client sensors usermetrics video video_files video_files_read webview"
+
+for v in 1.0 1.1 1.2 ; do
+    expected_groups="$expected_policy_groups_10"
+    if [ "$v" = "1.1" ]; then
+        expected_groups="$expected_policy_groups_11"
+    elif [ "$v" = "1.2" ]; then
+        expected_groups="$expected_policy_groups_12"
+    fi
+    tmp=`aa-easyprof --list-policy-groups --policy-vendor=ubuntu --policy-version=$v`
+    for p in $expected_groups ; do
+        found=""
+        for i in $tmp ; do
+            if [ "$p" = "$i" ]; then
+                found="yes"
+                continue
+            fi
+        done
+        if [ -z "$found" ]; then
+            echo "Could not find '$p'" >&2
+            rc="1"
+        fi
+    done
+
+    unexpected=""
+    for p in $tmp ; do
+        found=""
+        for i in $expected_groups ; do
+            if [ "$p" = "$i" ]; then
+                found="yes"
+                continue
+            fi
+        done
+        if [ -z "$found" ]; then
+            echo "Found unexpected '$p'" >&2
+            rc="1"
+        fi
+    done
+done
+
+if [ "$rc" = "0" ]; then
+    echo "PASS"
+else
+    echo "FAIL"
+fi
+exit "$rc"

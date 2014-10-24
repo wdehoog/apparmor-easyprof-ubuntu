@@ -1,0 +1,9 @@
+  # FIXME: nvidia (we could use the nvidia abstraction, but it needs ipc_lock
+  # so lets avoid that for now. Note, ~/.nv/GLCache is used unless
+  # __GL_SHADER_DISK_CACHE_PATH is set
+  /dev/nvidia[0-9] rw,
+  /dev/nvidiactl rw,
+  deny @{HOME}/.nvidia/ rw,
+  deny /tmp/gl* mrw, # nvidia does not honor TMPDIR when creating this, and
+                     # allowing this is too permissive, but it works without
+                     # it (LP: #1212425)

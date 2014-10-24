@@ -1,0 +1,4 @@
+  # HTC Desire Z (vision)
+  /dev/kgsl-2d0 rw,
+  /dev/genlock rw,
+  /sys/devices/system/soc/soc0/id r,

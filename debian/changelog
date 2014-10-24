@@ -1,0 +1,1141 @@
+apparmor-easyprof-ubuntu (1.2.37) utopic; urgency=medium
+
+  * ubuntu/audio: also allow access to GetArtistArt when accessing the
+    thumbnailer (LP: #1381102)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Tue, 14 Oct 2014 09:37:24 -0500
+
+apparmor-easyprof-ubuntu (1.2.36) utopic; urgency=medium
+
+  * ubuntu/accounts: allow all on org.freedesktop.DBus.Properties for
+    /com/google/code/AccountsSSO/SingleSignOn/** (LP: #1378809)
+  * ubuntu/ubuntu-*, pending/ubuntu-scope-local-content, ubuntu/webview: also
+    allow read on /android/system/build.prop (LP: #1378838)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 08 Oct 2014 08:28:17 -0500
+
+apparmor-easyprof-ubuntu (1.2.35) utopic; urgency=medium
+
+  * ubuntu/1.2/push-notification-client: don't deny access to the clipboard
+    since sdk apps are supposed to be able to specify this policy group
+  * ubuntu/1.2: add ubuntu-push-helper for push-helpers to use which (among
+    other things) explicitly disables access to the clipboard (LP: #1371170)
+  * adjust autopackagetest for ubuntu-push-helper
+  * ubuntu/accounts: allow all on org.freedesktop.DBus.Properties for
+    /com/google/code/AccountsSSO/SingleSignOn
+  * ubuntu/1.2/ubuntu-scope-network, pending/ubuntu-scope-local-content: also
+    add remaining libhybris paths (/{,var/}run/shm/hybris_shm_data and
+    /system/build.prop)
+  * ubuntu/ubuntu-sdk: explicitly disallow gsettings (dconf) access
+    (LP: #1378115)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Mon, 06 Oct 2014 10:41:18 -0500
+
+apparmor-easyprof-ubuntu (1.2.34) utopic; urgency=medium
+
+  * ubuntu/1.[12]/ubuntu-{sdk,webapp}: re-add still needed rule for
+    /{,run/}shm/shm/WK2SharedMemory.[0-9]*. This needs to stay until qtwebkit
+    is removed from the image (LP: #1377648)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Mon, 06 Oct 2014 07:10:09 -0500
+
+apparmor-easyprof-ubuntu (1.2.33) utopic; urgency=medium
+
+  * ubuntu/accounts: allow access to GetAll on org.freedesktop.DBus.Properties
+    for /com/google/code/AccountsSSO/SingleSignOn (LP: #1377205)
+  * ubuntu/webview: also deny access to /custom/etc/dconf_profile. This is
+    fallout from Oxide trying to use gsettings, but we've been silently
+    denying that access since the webview policy group was added, so just
+    silence this denial too (LP: #1260101)
+  * ubuntu/ubuntu-{sdk,webapp}: also allow talking to clipboard on freedesktop
+    interface (LP: #1377221)
+  * tests/test-data.py: update hardware dir handling and also adjust policy
+    groups to use tmpdir
+  * debian/control: Build-Depends on apparmor so we can check syntax during
+    builds
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 03 Oct 2014 10:21:33 -0500
+
+apparmor-easyprof-ubuntu (1.2.32) utopic; urgency=medium
+
+  * ubuntu/1.2/ubuntu-scope-network, pending/ubuntu-scope-local-content:
+    allow access to android libraries (LP: #1376430)
+  * ubuntu/ubuntu-{sdk,webapp}: allow read access for thumbnailer icons
+    (LP: #1376436)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 01 Oct 2014 15:13:35 -0500
+
+apparmor-easyprof-ubuntu (1.2.31) utopic; urgency=medium
+
+  * ubuntu/ubuntu-{sdk,webapp}: allow apps to read and write to their
+    app-specific QML cached bytecode (LP: #1376361)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 01 Oct 2014 12:18:29 -0500
+
+apparmor-easyprof-ubuntu (1.2.30) utopic; urgency=medium
+
+  * ubuntu/ubuntu-*: add owner /{run,dev}/shm/shmfd-* rwk (LP: #1370218)
+  * ubuntu/microphone: remove shmfd access since it is in the templates now
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Tue, 30 Sep 2014 09:33:57 -0500
+
+apparmor-easyprof-ubuntu (1.2.29) utopic; urgency=medium
+
+  * ubuntu/webview: explicitly deny write access to @{PROC}/[0-9]*/oom_adj
+    and @{PROC}/[0-9]*/oom_score_adj. This is confirmed as a way to escape
+    application lifecycle (LP: #1260115)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Mon, 29 Sep 2014 12:28:39 -0500
+
+apparmor-easyprof-ubuntu (1.2.28) utopic; urgency=medium
+
+  * ubuntu/calendar: add missing rule for org.freedesktop.DBus.Introspectable
+    on path /com/canonical/indicator/datetime/AlarmProperties (LP: #1374623)
+  * ubuntu/1.[12]/ubuntu-{sdk,webapp}: remove no longer needed rule for
+    /{,run/}shm/shm/WK2SharedMemory.[0-9]* (LP: #1197060)
+  * ubuntu/microphone:
+    - add temporary write access to /{run,dev}/shm/shmfd-* for QAudioRecorder
+      (LP: #1370218)
+    - explicitly deny read on /dev/
+  * ubuntu/1.1/webview: allow dbus send to RequestName on org.freedesktop.DBus
+    webapp-container needs corresponding 'bind' call on
+    org.freedesktop.Application, which we block elsewhere. webapp-container
+    shouldn't be doing this under confinement, but we allow this rule in
+    content_exchange, so just allow it to avoid confusion. (LP: #1357371)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 26 Sep 2014 15:21:37 -0500
+
+apparmor-easyprof-ubuntu (1.2.27) utopic; urgency=medium
+
+  * ubuntu/ubuntu-{sdk,webapp}: all apps can access the Mir clipboard
+    (LP: #1372579). Note, LP: 1371170 will be fixed in a future update
+  * ubuntu/push-notification-client: explit deny (with auditing) for access
+    to the Mir clipboard (background apps should not have access)
+  * ubuntu/ubuntu-scope-network: explicit deny (with auditing) for access
+    to the Mir clipboard (scopes should not have access)
+  * pending/ubuntu-scope-local-content: bring up to date with changes to
+    ubuntu-scope-network
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Tue, 23 Sep 2014 09:07:00 -0500
+
+apparmor-easyprof-ubuntu (1.2.26) utopic; urgency=medium
+
+  * ubuntu/{audio,video}: allow mediascanner to send us signals
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Mon, 22 Sep 2014 10:49:21 -0500
+
+apparmor-easyprof-ubuntu (1.2.25) utopic; urgency=medium
+
+  * ubuntu/location: don't filter receive on interface (allows PropertyChanged
+    on org.freedesktop.DBus.Properties but also helps future proof)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Sun, 21 Sep 2014 11:52:56 -0500
+
+apparmor-easyprof-ubuntu (1.2.24) utopic; urgency=medium
+
+  * ubuntu/camera: allow DBus communications with media-hub (LP: #1369512)
+  * ubuntu/*: drop redundnat 'ptrace (read) peer=@{profile_name}' since we
+    include it in the base abstraction now
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Tue, 16 Sep 2014 08:48:37 -0500
+
+apparmor-easyprof-ubuntu (1.2.23) utopic; urgency=medium
+
+  * ubuntu-scope-network:
+    - don't needlessly escape '-' in zmq access rule
+    - silence @{PROC}/[0-9]*/attr/current denial since the scopes runner uses
+      aa_getcon() and the denial is noisy (LP: #1367264)
+  * ubuntu-webapp: explicitly deny noisy denial to dbus bind on
+    org.freedesktop.Application
+  * debian/apparmor-easyprof-ubuntu.postinst: update the cached .md5sums file
+    on upgrade to avoid running on install and then again on first boot after
+    upgrade. This change only affects apt upgrades and not system-image
+    upgrades since system-image upgrades always use the existing .md5sums if
+    they exist (see /etc/system-image/writable-paths).
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 10 Sep 2014 08:54:28 -0500
+
+apparmor-easyprof-ubuntu (1.2.22) utopic; urgency=medium
+
+  * Updates for abstract and anonymous socket mediation (LP: #1362199):
+    - ubuntu/*/ubuntu-*:
+      + use dbus-strict and dbus-session-strict abstractions and remove
+        duplicated policy
+      + allow ubuntu-sdk and ubuntu-webapp connect, receive and send on the
+        maliit abstract socket
+      + allow write access to owner /{,var/}run/user/*/@{APP_PKGNAME}/{,**}
+    - ubuntu/*/unconfined: allow unix
+    - ubuntu/webview:
+      + allow oxide to talk to sandbox via unix sockets
+      + allow sandbox to talk to @{APP_PKGNAME}_@{APP_APPNAME}_@{APP_VERSION}
+        peer
+      + allow various unix perms from base abstract for the sandbox to use
+        unix sockets
+    - debian/control: Depends on apparmor >= 2.8.96~2541-0ubuntu4
+  * ubuntu/webview: use @{APP_PKGNAME}_@{APP_APPNAME}_@{APP_VERSION} for
+    signal now that we have @{APP_APPNAME} available (LP: #1363112)
+  * ubuntu/debug: 'audit deny @{HOME}/.local/share/ r' which is used by the
+    SDK to see if confined
+  * debian/control: Depends on apparmor >= 2.8.96~2541-0ubuntu4~
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 05 Sep 2014 15:17:07 -0500
+
+apparmor-easyprof-ubuntu (1.2.21) utopic; urgency=medium
+
+  * ubuntu/1.2/accounts: online accounts now has Mir trusted session support
+    so move accounts policy group to reserved (LP: #1230091)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 20 Aug 2014 08:05:37 -0500
+
+apparmor-easyprof-ubuntu (1.2.20) utopic; urgency=medium
+
+  * ubuntu/1.2/ubuntu-scope-network, pending/ubuntu-scope-local-content:
+    - add DBus session and system accesses to scope templates like we have in
+      the app templates. This allows scopes to talk to trusted helpers like
+      online accounts and location-service. Actual communication with the
+      services is still controlled by the respective policy groups.
+    - add scope-specific access to /run/user/[0-9]*/scopes/leaf-{net,fs}/*
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 15 Aug 2014 10:56:32 -0500
+
+apparmor-easyprof-ubuntu (1.2.19) utopic; urgency=medium
+
+  * ubuntu/1.2/ubuntu-scope-network, pending/ubuntu-scope-local-content:
+    adjust path to settings, it was renamed to settings.ini (LP: #1356930)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Thu, 14 Aug 2014 11:48:17 -0500
+
+apparmor-easyprof-ubuntu (1.2.18) utopic; urgency=medium
+
+  * ubuntu/1.2/ubuntu-scope-network, pending/ubuntu-scope-local-content:
+    - allow rk access to scope specific settings.db
+    - explicitly noisy deny rw access to unconfined directory
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 13 Aug 2014 08:39:40 -0500
+
+apparmor-easyprof-ubuntu (1.2.17) utopic; urgency=medium
+
+  * ubuntu/*: explicitly deny 'w' access to /dev/xLog (LP: #1352432)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Mon, 11 Aug 2014 15:45:29 -0500
+
+apparmor-easyprof-ubuntu (1.2.16) utopic; urgency=medium
+
+  * ubuntu/1.2/connectivity: update to use upcoming connectivity DBus API
+    (LP: #1341548)
+  * ubuntu/1.[12]/contacts: remove workaround policy since address-book-app
+    no longer uses the telepathy API (LP: #1227818)
+  * ubuntu/*: explicitly deny rw access to /dev/fb0. It is both dangerous and
+    noisy with the camera app
+  * ubuntu/ubuntu-webapp: receive application-specific Open on
+    org.freedesktop.Application to allow url-dispatcher working with already
+    running webapps (LP: #1342129)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Thu, 07 Aug 2014 13:19:59 -0500
+
+apparmor-easyprof-ubuntu (1.2.15) utopic; urgency=medium
+
+  * ubuntu/*: explicitly deny noisy access to @{PROC}/xlog (LP: #1352432)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Mon, 04 Aug 2014 12:56:05 -0500
+
+apparmor-easyprof-ubuntu (1.2.14) utopic; urgency=medium
+
+  * ubuntu/camera: update to allow write access to the finalized path for the
+    microphone socket (/dev/socket/micshm) (ref. LP: 1337582)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 30 Jul 2014 13:07:19 -0500
+
+apparmor-easyprof-ubuntu (1.2.13) utopic; urgency=medium
+
+  * ubuntu/1.2/ubuntu-scope-network: allow 'w' for leaf-net/@{APP_PKGNAME}/
+  * pending/ubuntu-scope-local-content:
+    - add 'w' for leaf-fs/@{APP_PKGNAME}/
+    - add missing fix for LP: 1347177 (LP: #1348210)
+  * include openssl abstraction in templates instead of in the networking
+    policy group. This is needed due to changes in newer curl and gnutls28
+    (LP: #1350152)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 30 Jul 2014 07:23:56 -0500
+
+apparmor-easyprof-ubuntu (1.2.12) utopic; urgency=medium
+
+  * ubuntu/1.2/ubuntu-scope-network: allow rw on zmq/*-r reply endpoints. The
+    scopes-api has protections for malformed or non-UUID-matching replies, so
+    use a glob here to allow aggregating scopes to work. (LP: #1347177)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 23 Jul 2014 10:15:17 -0500
+
+apparmor-easyprof-ubuntu (1.2.11) utopic; urgency=medium
+
+  * add data/hardware/graphics.d/apparmor-easyprof-ubuntu_hammerhead in
+    support of Nexus 5 devices
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Thu, 17 Jul 2014 10:14:31 -0500
+
+apparmor-easyprof-ubuntu (1.2.10) utopic; urgency=medium
+
+  * remove ubuntu/1.2/friends policy group and adjust autopackagetest
+    accordingly (LP: #1340869)
+  * ubuntu/calendar: com.canonical.indicator.datetime.AlarmProperties should
+    also be allowed on the org.freedesktop.DBus.Properties interface
+    (LP: #1342708)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 16 Jul 2014 11:15:29 -0500
+
+apparmor-easyprof-ubuntu (1.2.9) utopic; urgency=medium
+
+  * ubuntu/webview:
+    - adjust to allow oxide_render access to WebCore databases (LP: #1339724)
+    - adjust for updated path for QML web plugin (LP: #1339777)
+  * ubuntu/1.2: add new push-notification-client policy group
+  * ubuntu/ubuntu-{sdk,webapp}: adjust for updated path for QML web plugin
+  * ubuntu/audio: allow read access for /usr/share/sounds and
+    /custom/usr/share/sounds (LP: #1340326)
+  * ubuntu/camera: allow write access to /android/micshm (LP: #1337582)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Thu, 10 Jul 2014 12:28:30 -0500
+
+apparmor-easyprof-ubuntu (1.2.8) utopic; urgency=medium
+
+  * ubuntu/*/calendar: com.canonical.indicator.datetime.AlarmProperties
+    should be allowed to confined apps
+  * ubuntu/ubuntu-scope-network (and pending ubuntu-scope-local-content):
+    - allow exec of scoperunner for .so scopes
+    - remove unused policy for .so files (the scope click hook creates
+      symlinks to the click install directory instead)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 27 Jun 2014 11:59:02 -0500
+
+apparmor-easyprof-ubuntu (1.2.7) utopic; urgency=medium
+
+  * update for usensors (LP: #1334701)
+    - ubuntu/*/ubuntu-sdk, ubuntu-webapp: update for haptic feedback
+    - ubuntu/1.2/sensors:
+      + remove /dev/binder
+      + add access to all of usensors DBus API
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Thu, 26 Jun 2014 15:03:16 -0500
+
+apparmor-easyprof-ubuntu (1.2.6) utopic; urgency=medium
+
+  * ubuntu/*/ubuntu-sdk, ubuntu-webapp:
+    - allow read access to /custom/usr/share/fonts/{,**}
+    - allow read access to /custom/xdg/data/themes/
+    - group /custom rules together
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 25 Jun 2014 10:42:17 -0500
+
+apparmor-easyprof-ubuntu (1.2.5) utopic; urgency=medium
+
+  * ubuntu/ubuntu-scope-network (and pending ubuntu-scope-local-content):
+    adjust to use @{APP_PKGNAME}_@{APP_APPNAME}* for zmq endpoints
+  * tests/test-data.py: updates for new click-apparmor variables which are
+    now needed since easyprof now more carefully verifies the policy
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Mon, 23 Jun 2014 14:56:17 -0500
+
+apparmor-easyprof-ubuntu (1.2.4) utopic; urgency=medium
+
+  * ubuntu/1.2: refinements to scopes policy
+    - use private-files-strict abstraction
+    - finetune client endpoint policy
+    - explicitly deny access to the zmq directory for the ubuntu-sdk and
+      ubuntu-webapp templates
+    - explicitly deny direct interaction with URL dispatcher to prevent data
+      leaks
+    - move ubuntu-scope-local-content template to 'pending' since there are
+      unresolved issues surrounding its interaction with URL dispatcher.
+      Adjust autopkgtests accordingly
+  * ubuntu/calendar: update for upcoming calendar management landing
+  * ubuntu/*/audio,video: add mediascanner2 DBus access (LP: #1303962)
+  * ubuntu/1.[12]/music_files_read: remove temporary access to
+    @{HOME}/.cache/mediascanner/ now that we have policy for mediascanner2
+    DBus access. Note: normally this would require the change in only the
+    latest policy, but this policy group has only been used by the music-app
+    and it is still unconfined
+  * ubuntu/1.1: also ship debug policy group for 1.1 policy and update
+    autopkgtests for this (LP: #1323233)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 06 Jun 2014 07:37:54 -0500
+
+apparmor-easyprof-ubuntu (1.2.3) utopic; urgency=medium
+
+  * fix autopkgtests for new templates and policy group
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 30 May 2014 08:00:50 +0200
+
+apparmor-easyprof-ubuntu (1.2.2) utopic; urgency=medium
+
+  * ubuntu/1.2:
+    - add ubuntu-scope-network template
+    - add ubuntu-scope-local-content template
+    - add debug policy group (LP: #1323233)
+  * ubuntu/1.[12]: add ptrace read to @{profile_name}
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 30 May 2014 00:36:26 +0200
+
+apparmor-easyprof-ubuntu (1.2.1) utopic; urgency=medium
+
+  * ubuntu/*: update unconfined template to work with autopilot (changes to
+    exec were required since the /** pix rule conflicted with upcoming
+    autopilot rules)
+    - use ###VAR### since the template vars
+    - allow exec (mostly) everywhere except @{HOMEDIRS}/*/autopilot/fakeenv
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 23 May 2014 08:46:09 +0200
+
+apparmor-easyprof-ubuntu (1.2.0) utopic; urgency=medium
+
+  * add 1.2 policy:
+    - create data/templates/ubuntu/1.2 and symlink to 1.1 policy
+    - create data/policygroups/ubuntu/1.2 and symlink to 1.1 policy
+    - update debian/tests/installed_* to add 1.2 policy
+  * tests/test-data.py: add --debug option
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Thu, 22 May 2014 12:20:00 +0200
+
+apparmor-easyprof-ubuntu (1.1.18) utopic; urgency=medium
+
+  * ubuntu/*: adjust audio/video policy groups comment to mention that the
+    media-hub server allows playing remote content
+  * ubuntu/networking:
+    - correct member portion of DBus rules to not include interface
+      (LP: #1311164)
+    - adjust explit deny DownloadManager rules to include interface
+  * 1.*/ubuntu-sdk:
+    - allow read of /usr/share/qtdeclarative5-ubuntu-ui-extras-browser-plugin/
+    - allow read access of /etc/machine-id
+    - allow ptrace read of ourself
+  * 1.1/webview: allow capability dac_read_search for oxide_helper
+  * 1.*/video: allow read access to video4linux for playback
+  * 1.*/audio: allow calling GetAlbumArt from the thumbnailer DBus API
+  * 1.1/ubuntu-*: remove temporary rule for /usr/share/libthai/thbrk.tri
+  * ubuntu/*: adjust the calendar and contacts reserved policy groups to
+    allow access to the sync monitor (LP: #1319544). This should be removed
+    when LP: 1319546 is fixed.
+  * 1.1/music_files_read: allow read of @{HOME}/.cache/mediascanner/ until
+    LP: 1303962 and LP: 1315381 are fixed
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Thu, 15 May 2014 13:37:06 -0500
+
+apparmor-easyprof-ubuntu (1.1.17) trusty; urgency=medium
+
+  * 1.*/audio,video: allow communications with the media-hub-server now that
+    it is a trusted helper (LP: #1303962)
+  * 1.1/music_files*,video_files*: revert media-hub rules in 1.1.15 now that
+    common policy groups (audio and video) can be used instead
+  * 1.1/ubuntu-*: allow apps to communicate with the Launcher via their
+    @{APP_ID_DBUS} specific path (LP: #1301400)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 16 Apr 2014 13:40:03 -0500
+
+apparmor-easyprof-ubuntu (1.1.16) trusty; urgency=medium
+
+  * 1.1/webview: update to allow exec of chrome-sandbox now that oxide is
+    doing a proper fork/exec
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 09 Apr 2014 13:58:10 -0500
+
+apparmor-easyprof-ubuntu (1.1.15) trusty; urgency=medium
+
+  * 1.*/unconfined: update for ptrace and signal
+  * 1.1/music_files*: add rules for talking to the media-hub-server and read
+    access to mediascanner files
+  * 1.1/video_files*: add rules for talking to the media-hub-server and read
+    access to mediascanner files
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Tue, 08 Apr 2014 07:09:42 -0500
+
+apparmor-easyprof-ubuntu (1.1.14) trusty; urgency=medium
+
+  * 1.1/webview: update for ptrace and signal mediation (LP: #1298611)
+  * debian/control: Depends on apparmor >= 2.8.95~2430-0ubuntu4
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Thu, 03 Apr 2014 15:19:23 -0500
+
+apparmor-easyprof-ubuntu (1.1.13) trusty; urgency=medium
+
+  * 1.1/webview (LP: #1301351)
+    - add 'mr' for chrome-sandbox and oxide-renderer
+    - allow 'r' for @{PROC}/sys/kernel/yama/ptrace_scope
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 02 Apr 2014 09:11:49 -0500
+
+apparmor-easyprof-ubuntu (1.1.12) trusty; urgency=medium
+
+  * 1.1/webview: suppress denial for write to /usr/bin/locales/ like we do for
+    /usr/lib/@{multiarch}/oxide-qt/locales/ already since it is confusing for
+    people who are diagnosing oxide issues (LP: #1260044)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Mon, 31 Mar 2014 13:14:37 -0500
+
+apparmor-easyprof-ubuntu (1.1.11) trusty; urgency=medium
+
+  * 1.0/ubuntu-*: explicitly deny access to oxide files so webbrowser-app's
+    fallback mechanism to QtWebKit works correctly. This is needed so 13.10
+    framework webapps don't regress
+  * 1.1/webview: prevent certificate db poisoning and disallow write access to
+    @{HOME}/.pki/nssdb/*. Note, while this prevents cert attacks, it doesn't
+    prevent information disclosure so once LP: 1260048 is fixed in oxide, we
+    can remove the read access.
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 28 Mar 2014 09:57:13 -0500
+
+apparmor-easyprof-ubuntu (1.1.10) trusty; urgency=medium
+
+  * 1.*/ubuntu-*:
+    - add read access to /usr/share/unity/icons/**. Why this isn't under
+      /usr/share/icons/unity instead, I don't know, but the access is
+      harmless, so allow it. This is currently needed by the gallery
+    - explicitly deny access to com.canonical.snapdecisions interface
+      (LP: #1291234)
+  * 1.*/friends: allow freedesktop.org notifications which is needed by the
+    gallery app to show that a picture has been uploaded (LP: #1279969)
+  * debian/control: Build-Depends on apparmor-easyprof since it is needed by
+    the testsuite. This is needed because dh-apparmor now only Suggests
+    apparmor-easyprof
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Mon, 24 Mar 2014 17:20:42 -0500
+
+apparmor-easyprof-ubuntu (1.1.9) trusty; urgency=medium
+
+  * adjustments for Qt5.2
+    - 1.*/networking: like with other NetworkManager access, explicitly deny
+      connecting to peer=(name=org.freedesktop.NetworkManager)
+  * 1.1/content_exchange: deny 'w' on ~/.cache/@{APP_PKGNAME}/HubIncoming/**.
+    The content-hub will create hard links in this directory for volatile
+    data, but using hard links means the content source file could be modified
+    by the app. This prevents that. (LP: #1293771)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Mon, 17 Mar 2014 15:04:33 -0500
+
+apparmor-easyprof-ubuntu (1.1.8) trusty; urgency=medium
+
+  * 1.*/ubuntu-sdk: allow accesses to workaround intel driver crash on X
+    - allow read of /sys/devices/pci[0-9]*/**/uevent
+    - allow read of /etc/udev/udev.conf
+    - explicityly deny /run/udev/data/**, like we do elsewhere
+    - LP: #1286162
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 05 Mar 2014 12:16:44 -0600
+
+apparmor-easyprof-ubuntu (1.1.7) trusty; urgency=medium
+
+  * 1.*/ubuntu-sdk: /usr/share/ubuntu-html5-theme moved to
+    /usr/share/ubuntu-html5-ui-toolkit (LP: #1287297)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Mon, 03 Mar 2014 12:18:22 -0600
+
+apparmor-easyprof-ubuntu (1.1.6) trusty; urgency=medium
+
+  * add hardware/graphics.d/apparmor-easyprof-ubuntu_flo
+  * update hardware/graphics.d/apparmor-easyprof-ubuntu_mako: allow read of
+    /sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0/gpuclk r,
+  * 1.*/ubuntu-*: add read for /sys/devices/system/cpu/
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Sat, 22 Feb 2014 11:22:12 -0600
+
+apparmor-easyprof-ubuntu (1.1.5) trusty; urgency=medium
+
+  * 1.0/ubuntu-sdk: add read to qtdeclarative5-ubuntu-ui-extras-browser-plugin
+    for applications that use UbuntuWebview (LP: #1280293)
+  * 1.1/webview: add read to qtdeclarative5-ubuntu-ui-extras-browser-plugin.
+    With 1.1 we will use oxide so all applications using UbuntuWebview will
+    need to specify this policy group, so just add it here rather than
+    the ubuntu-sdk template
+  * adjust ubuntu-* templates to allow read to /usr/share/libthai/thbrk.tri
+    as a temporary fix until the AppArmor fonts abstraction has the real fix
+    (LP: #1278702)
+  * 1.1/ubuntu-webapp: explicitly deny noicy read access to /sys/bus/ and
+    /sys/class/
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Tue, 18 Feb 2014 09:00:55 -0600
+
+apparmor-easyprof-ubuntu (1.1.4) trusty; urgency=medium
+
+  * 1.*/ubuntu-sdk: adjust for ubuntu-html5-app-launcher (LP: #1274640)
+    - allow reexec for /usr/bin/ubuntu-html5-app-launcher to handle HTML5 apps
+      launched via upstart-app-launch
+    - allow read access to /usr/share/ubuntu-html5-app-launcher/**
+  * 1.*/accounts:
+    - allow read on @{HOME}/.local/share/accounts/** to dereference click
+      symlinks for online accounts providers (LP: #1278859)
+    - add comment about usage of com.nokia.singlesignonui.cookiesForIdentity
+  * 1.*/networking: finetune DownloadManager DBus access (LP: #1277578)
+    - explicitly allow safe and explicitly disallow unsafe DownloadManager
+      APIs
+    - restrict apps to their own downloads
+  * 1.*/ubuntu-webapp: allow the webapps access to SignonUi API for retrieving
+    web cookies for an account (com.nokia.singlesignonui.cookiesForIdentity).
+    This is being added to the ubuntu-webapp template instead of the accounts
+    policy group because this API should only be available to the webapp
+    container and is not needed to use online accounts in general
+    (LP: #1278934)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 12 Feb 2014 09:20:58 -0600
+
+apparmor-easyprof-ubuntu (1.1.3) trusty; urgency=medium
+
+  * 1.1/webview: updates for oxide
+  * 1.1/ubuntu-sdk: remove workaround policy for LP: #1197056 (cordova webview
+    applications should not use ~/.local/share)
+  * 1.*/ubuntu-sdk: all to receive Open on org.freedesktop.Application to
+    allow UriHandler in the SDK to work with already running apps. Patch
+    thanks to Ken Vandine.
+  * implement autopkgtests
+    - add debian/tests/control
+    - add debian/tests/install_*
+    - adjust debian/control for XS-Testsuite
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 05 Feb 2014 16:54:26 -0500
+
+apparmor-easyprof-ubuntu (1.1.2) trusty; urgency=medium
+
+  * 1.*/ubuntu-* templates: allow ro access to /etc/xdg/QtProject/Sensors.conf
+    (LP: #1267972)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 10 Jan 2014 13:39:00 -0600
+
+apparmor-easyprof-ubuntu (1.1.1) trusty; urgency=medium
+
+  * adjust policy for webapp-container (LP: #1267183)
+    - 1.0/ubuntu-webapp template adds /usr/bin/webapp-container rmix since
+      apps can currently only use ubuntu-sdk-13.10 framework
+    - 1.1/ubuntu-webapp template replaces /usr/bin/webbrowser-app with
+      /usr/bin/webapp-container since 1.1 policy will only be allowed with
+      ubuntu-sdk-14.04 framework
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Thu, 09 Jan 2014 07:53:56 -0600
+
+apparmor-easyprof-ubuntu (1.1.0) trusty; urgency=medium
+
+  * no change over last version except the minor version of the packaging
+    version which I forgot to increment in the last upload
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 20 Dec 2013 14:29:06 -0600
+
+apparmor-easyprof-ubuntu (1.0.44) trusty; urgency=low
+
+  * add ubuntu/1.1 policy, symlinking to 1.0 for things with no changes
+  * adjust tests/test-data.py for 1.1 policy
+  * add webview policy group for oxide
+  * 1.*/ubuntu-* templates:
+    - remove old comment about Click packages being installed in /opt
+    - explicitly deny /run/shm/lttng-ust-* (LP: #1260491)
+    - also allow /custom/xdg/data/themes (LP: #1261875)
+  * 1.1/ubuntu-* templates: remove access to /tmp/mir_socket (LP: #1236912)
+  * add hardware/graphics.d/apparmor-easyprof-ubuntu_goldfish
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 20 Dec 2013 08:13:36 -0600
+
+apparmor-easyprof-ubuntu (1.0.43) trusty; urgency=low
+
+  * ubuntu-* templates: explicitly disable access to /dev/input/* (with audit)
+    to ensure they aren't ever accidentally enabled
+  * accounts: add policy for account change notifications and invoking the
+    trusted helper (LP: #1245903)
+  * ubuntu-* templates: also allow rw access to
+    /sys/devices/virtual/timed_output/vibrator/enable
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Thu, 21 Nov 2013 06:15:03 -0600
+
+apparmor-easyprof-ubuntu (1.0.42) trusty; urgency=low
+
+  * ubuntu-sdk template:
+    - workaround non-app-specific cordova-ubuntu file accesses (LP: 1197056)
+    - allow reexec for /usr/bin/cordova-ubuntu* to handle cordova apps
+      launched via upstart-app-launch (LP: #1244655)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 25 Oct 2013 15:39:29 -0500
+
+apparmor-easyprof-ubuntu (1.0.41) trusty; urgency=low
+
+  * ubuntu-* templates:
+    - allow rw access to /sys/class/timed_output/vibrator/enable
+      (LP: #1241735)
+    - comment on how NameHasOwner and GetNameOwner may leak information
+  * networking: explicitly deny receive messages and signals from network
+    manager and ofono in addition to send to silence denials for apps and
+    libraries with too broad AddMatch calls
+  * hardware/video.d: add hardware specific accesses for mako and maguro
+    (LP: #1243198)
+  * hardware/audio.d: add hardware specific accesses for mako
+  * video:
+    - include hardware/video.d
+    - add /dev/ashmem
+  * audio: add /dev/ashmem
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Tue, 22 Oct 2013 07:37:43 -0500
+
+apparmor-easyprof-ubuntu (1.0.40) saucy; urgency=low
+
+  * unconfined template: updates for terminal app
+    - due to AF_UNIX use attach_disconnected
+    - allow mount, remount and umount
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Tue, 15 Oct 2013 08:37:54 -0500
+
+apparmor-easyprof-ubuntu (1.0.39) saucy; urgency=low
+
+  * friends: add dbus receive to interface=com.canonical.Dee.Peer
+  * ubuntu-* templates:
+    - add 'r' for ~/.config/user-dirs.dirs
+    - remove temporary vs-thumb /usr/share access now that it is fixed
+      (LP: #1235325)
+  * calendar: also allow CalendarView (LP: #1239073)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Sun, 13 Oct 2013 21:55:36 -0500
+
+apparmor-easyprof-ubuntu (1.0.38) saucy; urgency=low
+
+  * ubuntu-* templates: move /run/shm/hybris_shm_data access out of the
+    camera policy group into the templates since a recent hybris change
+    requires this in all apps (LP: #1237539)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 09 Oct 2013 12:47:53 -0500
+
+apparmor-easyprof-ubuntu (1.0.37) saucy; urgency=low
+
+  * hardware/graphics.d/apparmor-easyprof-ubuntu_grouper: allow 'rw' to
+    /dev/knvmap (LP: #1237436)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 09 Oct 2013 09:29:56 -0500
+
+apparmor-easyprof-ubuntu (1.0.36) saucy; urgency=low
+
+  * ubuntu-* templates:
+    - due to AF_UNIX use attach_disconnected and allow rw on
+      /dev/socket/property_service (LP: #1208988)
+    - add temporary workaround to use /tmp/mir_socket (LP: 1236912)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Tue, 08 Oct 2013 13:11:46 -0500
+
+apparmor-easyprof-ubuntu (1.0.35) saucy; urgency=low
+
+  * apparmor-easyprof-ubuntu.install: install data/hardware/*, thus allowing
+    porters, OEMs, etc to ship their own policy without having to modify this
+    package (LP: #1197133)
+  * add data/hardware/graphics.d/* and data/hardware/audio.d/*, namespaced to
+    this package. We will move these out to lxc-android-config later
+  * tests/test-data.py: adjust to test data/hardware/*
+  * accounts: move to reserved status until LP: 1230091 is fixed
+  * calendar: remove workaround rule for gio DBus path (LP: #1227295)
+  * add usermetrics policy group so apps can update the infographic
+  * ubuntu-* templates:
+    - allow StartServiceByName on the system bus too. This is needed by the
+      new usermetrics policy group and we will presumably have more going
+      forward (eg location)
+    - account for /org/freedesktop/dbus object path. This seems to be used by
+      the python DBus bindings (eg, friends)
+    - move hardware specific accesses out of the templates into
+      hardware/graphics.d/ in preparation of the move to shipping these in
+      lxc-android-config (note, this doesn't change apparmor policy in any
+      way)
+    - add 'r' to dbus system bus socket (LP: #1208988)
+    - add ixr access to thumbnailer helper (LP: #1234543)
+    - finetune HUD access
+    - don't use ibus abstraction but instead use 'r' access for
+      owner @{HOME}/.config/ibus/**
+    - don't use freedesktop.org abstraction but instead add read accesses
+      for /usr/share/icons and various mime files
+    - updates for new gstreamer
+      - move in gstreamer accesses from audio policy groupd due to hybris
+  * ubuntu-sdk template:
+    - remove workaround paths now that ubuntu-ui-toolkit is using
+      QCoreApplication::applicationName based on MainView's applicationName
+      (LP: #1197056, #1197051, #1224126, LP: #1231863)
+  * ubuntu-webapp template:
+    - allow read access to /usr/share/unity-webapps/userscripts/**
+    - allow rix to gst-plugin-scanner
+  * add reserved friends policy group (reserved because it needs integration
+    with trust-store to be used by untrusted apps)
+  * remove peer from receive DBus rules in the ubuntu-* templates and the
+    contacts, history, and location policy groups (LP: #1233895)
+  * audio:
+    - move gstreamer stuff out to templates since hybris pulls it in for all
+      apps
+    - include hardware/audio.d for hardware specific accesses
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Mon, 07 Oct 2013 13:18:27 -0500
+
+apparmor-easyprof-ubuntu (1.0.34) saucy; urgency=low
+
+  * ubuntu-* templates: allow read access to themes in /custom (LP: #1229471)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Tue, 24 Sep 2013 10:27:02 -0500
+
+apparmor-easyprof-ubuntu (1.0.33) saucy; urgency=low
+
+  * ubuntu-webapp: allow reexec for webbrowser-app to handle webapps launched
+    via upstart-app-launch (LP: #1228236)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 20 Sep 2013 11:46:35 -0500
+
+apparmor-easyprof-ubuntu (1.0.32) saucy; urgency=low
+
+  * accounts:
+    - needs lock ('k') access to .config/libaccounts-glib/accounts.db and read
+      access to .config/libaccounts-glib/accounts.db*.
+    - read access to /usr/share/accounts/**
+    - deny write to .config/libaccounts-glib/accounts.db* (LP: #1220552)
+  * refine audio policy group:
+    - remove /tmp/ accesses now that TMPDIR is set by the sandbox
+    - allow access to only the native socket (ie, disallow dbus-socket (only
+      needed by pacmd), access to pid and the cli debugging socket)
+      (LP: #1211380)
+    - remove 'w' access to /{,var/}run/user/*/pulse/ - this should already
+      exist when click apps run
+    - remove /dev/binder, no longer needed now that we use audio HAL and
+      pulseaudio
+    - silence the denial for creating ~/.gstreamer-0.10/ if it doesn't exist
+  * camera:
+    - add rw for /dev/ashmem. This will go away when camera moves to HAL
+    - rw /run/shm/hybris_shm_data
+    - add read on /android/system/media/audio/ui/camera_click.ogg
+  * connectivity:
+    - add policy as used by QML's QtSystemInfo and also Qt's QHostAddress,
+      QNetworkInterface
+    - add commented out rules for ofono (LP: 1226844)
+  * finalize content_exchange policy for the content-hub. We now have two
+    different policy groups: content_exchange for requesting/importing data
+    and content_exchange_source for providing/exporting data
+  * microphone:
+    - remove /dev/binder, no longer needed now that we use audio HAL and
+      pulseaudio
+    - add gstreamer and pulseaudio accesses and silence ALSA denials (we
+      force pulseaudio). Eventually we should consolidate these and the ones
+      in audio into a separate abstraction.
+  * networking
+    - explicitly deny access to NetworkManager. This technically should be
+      needed at all, but depending on how apps connect, the lowlevel
+      libraries get NM involved. Do the same for ofono
+    - add access to the download manager (LP: #1227860)
+  * video: add gstreamer accesses. Eventually we should consolidate these
+    and the ones in audio into a gstreamer abstraction
+  * add the following new reserved policy groups (reserved because they need
+    integration with trust-store to be used by untrusted apps):
+    - calendar - to access /org/gnome/evolution/dataserver/SourceManager,
+      /org/gnome/evolution/dataserver/CalendarFactory and
+      /org/gnome/evolution/dataserver/Calendar/**
+    - contacts - to access com.canonical.pim and org.freedesktop.Telepathy.
+      Note, org.freedesktop.Telepathy will go away when LP: 1227818 is fixed
+    - history - to access com.canonical.HistoryService
+  * remove unused policy groups. This would normally constitute a new minor
+    version, but no one is using these yet. When there is an API to use for
+    this sort of thing, we can reintroduce them
+    - read_connectivity_details
+    - bluetooth (no supported Qt5 API for these per the SDK team)
+    - nfc (no supported Qt5 API for these per the SDK team)
+  * ubuntu* templates:
+    - remove workaround HUD rule for DBus access to hud/applications/* now
+      that the HUD is fixed.
+    - allow connecting to dbus-daemon system daemon (org.freedesktop.DBus)
+      for Hello, GetNameOwner, NameHasOwner, AddMatch and RemoveMatch which
+      are all currently used when connecting to the network depending on the
+      application API used. Allow the accesses to silence the denials: they
+      are harmless and allows us to add more allow rules for other policy
+      groups for system bus APIs down the line (as opposed to if we
+      explicitly denied the accesses to org.freedesktop.DBus).
+    - add more Nexus 7 accesses
+  * ubuntu-sdk template:
+    - remove workaround access for /tmp/*.sci now that TMPDIR is set
+      (LP: #1197047)
+    - remove workaround access for /var/tmp/etilqs_* now that TMPDIR is set
+      (LP: #1197049)
+    - add support for HTC vision thanks to Florian Will (LP: #1214975)
+  * ubuntu-webapp template: use only application specific directories rather
+    then the global webbrowser-app one (LP: #1226085)
+  * debian/rules: enable tests during build
+  * debian/control: Build-Depends on python3-minimal (for tests)
+  * apparmor-easyprof-ubuntu.postinst: run aa-clickhook -f if it is available
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 18 Sep 2013 15:06:15 -0500
+
+apparmor-easyprof-ubuntu (1.0.31) saucy; urgency=low
+
+  * ubuntu-* templates: allow unconditional access to the DispatchURL
+    API from com.canonical.URLDispatcher
+  * ubuntu-sdk template: add another temporary workaround for non-app-specific
+    path for qtdeclarative5-u1db1.0 (see LP: 1224126 for details)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 11 Sep 2013 16:36:01 -0500
+
+apparmor-easyprof-ubuntu (1.0.30) saucy; urgency=low
+
+  * update location policy group to allow connections to location service on
+    the system bus (LP: #1223211). This will need to be updated once the
+    trust-store is implemented (that is tracked in LP: 1223371)
+  * move ubuntu-webapp-experimental to ubuntu-webapp
+  * ubuntu-* templates: clarify comments on XDG base dirs
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Tue, 10 Sep 2013 08:49:06 -0500
+
+apparmor-easyprof-ubuntu (1.0.29) saucy; urgency=low
+
+  * add 'Usage' meta information to all policy groups
+  * music_files*, picture_files*, video_files*: update the descriptions for
+    these policy groups and mark them as reserved
+  * debian/README.Debian: update for the above
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Thu, 05 Sep 2013 09:31:33 -0500
+
+apparmor-easyprof-ubuntu (1.0.28) saucy; urgency=low
+
+  * accounts policy group: allow read access to accounts.db (LP: #1220552)
+  * audio policy group: allow a few more pulseaudio accesses (LP: #1220552)
+  * ubuntu-sdk template: allow read access to gschemas.compiled (LP: #1218655)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 04 Sep 2013 08:34:33 -0500
+
+apparmor-easyprof-ubuntu (1.0.27) saucy; urgency=low
+
+  * ubuntu-* template: update HUD access
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Tue, 03 Sep 2013 11:18:37 -0500
+
+apparmor-easyprof-ubuntu (1.0.26) saucy; urgency=low
+
+  * ubuntu-* template: allow accesses to /android/vendor/lib (LP: #1219885)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Tue, 03 Sep 2013 09:38:03 -0500
+
+apparmor-easyprof-ubuntu (1.0.25) saucy; urgency=low
+
+  * accounts, location, content_exchange: uncomment DBus rules now that
+    apparmor_parser supports them
+  * ubuntu-sdk:
+   - deny QtWebPluginProcess for now
+   - simplify workaround access for webkit webviews
+  * ubuntu-*: fix HUD accesses
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 30 Aug 2013 16:10:53 -0500
+
+apparmor-easyprof-ubuntu (1.0.24) saucy; urgency=low
+
+  * ubuntu-* template: adjust HUD rule to use @{APP_ID_DBUS}
+  * debian/control: Depends on apparmor (>= 2.8.0-0ubuntu26) which is first
+    to support variables in DBus rules
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Thu, 29 Aug 2013 21:53:36 -0500
+
+apparmor-easyprof-ubuntu (1.0.23) saucy; urgency=low
+
+  * ubuntu-sdk template: another update for HUD DBus rules
+  * add preliminary ubuntu-webapp-experimental template
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Thu, 29 Aug 2013 14:36:17 -0500
+
+apparmor-easyprof-ubuntu (1.0.22) saucy; urgency=low
+
+  * ubuntu-sdk template:
+    - add rk for gnome/index.theme
+    - add DBus rule for maliit
+    - add DBus rules for com.canonical.Shell.BottomBarVisibilityCommunicator
+    - update HUD DBus rules
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Thu, 29 Aug 2013 08:23:39 -0500
+
+apparmor-easyprof-ubuntu (1.0.21) saucy; urgency=low
+
+  * unconfined template: add access to DBus
+  * ubuntu-sdk template: preliminary DBus rules
+  * debian/control: update to Depends on apparmor 2.8.0-0ubuntu25, the first
+    version of apparmor that supports DBus rules
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 28 Aug 2013 16:24:52 -0500
+
+apparmor-easyprof-ubuntu (1.0.20) saucy; urgency=low
+
+  * ubuntu-sdk template: allow accesses to /android/system/lib
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 28 Aug 2013 10:22:32 -0500
+
+apparmor-easyprof-ubuntu (1.0.19) saucy; urgency=low
+
+  * ubuntu-sdk template: simply the accesses to the QML OfflineStorage. These
+    rules are temporary and the old ones slowed down the parser
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 23 Aug 2013 16:59:52 -0500
+
+apparmor-easyprof-ubuntu (1.0.18) saucy; urgency=low
+
+  * ubuntu-sdk template: allow accesses for cordova (PhoneGap)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 23 Aug 2013 13:58:30 -0500
+
+apparmor-easyprof-ubuntu (1.0.17) saucy; urgency=low
+
+  * ubuntu-sdk template:
+    - add note on info leaks via /proc until we get the kernel vars
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 16 Aug 2013 12:27:16 -0500
+
+apparmor-easyprof-ubuntu (1.0.16) saucy; urgency=low
+
+  * rename data_exchange policy group to content_exchange. This would normally
+    constitute a new minor version, but no one is using these yet
+  * ubuntu-sdk template:
+    - add a couple PROC accesses for desktop systems
+    - add /usr/bin/qtchooser rmix for launching under upstart
+    - add device specific access for desktop nvidia users (LP: #1212425)
+    - adjust to use /{,var/}run/user/*/confined/@{APPNAME} instead of
+      /{,var/}run/user/*/@{APPNAME}
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 14 Aug 2013 13:56:04 -0500
+
+apparmor-easyprof-ubuntu (1.0.15) saucy; urgency=low
+
+  * ubuntu-sdk template:
+    - remove redundant library access
+    - add device specific access for manta (LP: #1211055)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 14 Aug 2013 13:46:01 -0500
+
+apparmor-easyprof-ubuntu (1.0.14) saucy; urgency=low
+
+  * audio policy group:
+    - adjust to enforce pulseaudio, and clean up comments for for gstreamer
+    - generalize gsreamer access a bit
+  * ubuntu-sdk template:
+    - adjust template to use /{,var/}run/user/*/confined/@{APPNAME}/ to avoid
+      potential name conflicts and info disclosure of running apps
+    - remove stray gstreamer access that is now in audio
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Mon, 12 Aug 2013 10:59:19 -0500
+
+apparmor-easyprof-ubuntu (1.0.13) saucy; urgency=low
+
+  * update audio, camera and video for desktop systems
+  * ubuntu-sdk template
+    - remove libhybris change in 1.0.12. After studying the architecture, this
+      provides no security benefit
+    - add note on binder
+  * move /dev/binder accesses out to each policy group that requires them.
+    These will be removed as the migration to HAL is performed (see LP 1197134
+    for details)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 09 Aug 2013 15:02:57 -0500
+
+apparmor-easyprof-ubuntu (1.0.12) saucy; urgency=low
+
+  * update ubuntu-sdk template for libhybris. We will allow loading various
+    android libraries except those associated with our policy group
+    permissions for audio, camera, gps, microphone, sensors and video. Ideally
+    we'll have a cleaner way of handling this in the future, but it works for
+    now.
+  * add initial set of supported policy groups:
+    - accounts (commented out DBus rules)
+    - audio
+    - bluetooth (empty)
+    - camera
+    - connectivity (empty)
+    - data_exchange (commented out DBus rules)
+    - location (commented out DBus rules)
+    - microphone
+    - music_files
+    - music_files_read
+    - networking
+    - nfc (empty)
+    - picture_files
+    - picture_files_read
+    - read_connectivity_details (empty)
+    - sensors (empty)
+    - video
+    - video_files
+    - video_files_read
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Thu, 01 Aug 2013 16:58:23 -0500
+
+apparmor-easyprof-ubuntu (1.0.11) saucy; urgency=low
+
+  * update ubuntu-sdk to have policy for standard locations for
+    XDG_CONFIG_HOME and XDG_RUNTIME_DIR too
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 31 Jul 2013 14:22:07 -0500
+
+apparmor-easyprof-ubuntu (1.0.10) saucy; urgency=low
+
+  * update ubuntu-sdk template for future paths:
+    - reorganize and remove two redundant rules
+    - allow mrwkl to @{HOME}/.cache/@{APPNAME}/**
+    - allow mrwklix to @{HOME}/.local/share/@{APPNAME}/** ('ix' supports
+      downloadable content)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 31 Jul 2013 08:49:10 -0500
+
+apparmor-easyprof-ubuntu (1.0.9) saucy; urgency=low
+
+  * update ubuntu-sdk template:
+    - for mako
+    - write to /sys/kernel/debug/tracing/trace_marker
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 24 Jul 2013 09:11:36 -0500
+
+apparmor-easyprof-ubuntu (1.0.8) saucy; urgency=low
+
+  * update ubuntu-sdk template to use @{CLICK_DIR}
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Thu, 18 Jul 2013 15:22:55 -0500
+
+apparmor-easyprof-ubuntu (1.0.7) saucy; urgency=low
+
+  * update ubuntu-sdk to allow 'mklix' in addition to 'r' in the install
+    directory
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 17 Jul 2013 09:37:45 -0500
+
+apparmor-easyprof-ubuntu (1.0.6) saucy; urgency=low
+
+  * update ubuntu-sdk template for maguro
+  * add tests/test-data.py (not yet enabled in the build)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 12 Jul 2013 08:28:09 -0500
+
+apparmor-easyprof-ubuntu (1.0.5) saucy; urgency=low
+
+  * update for UTIK to ubuntu-ui-toolkit path change
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Thu, 11 Jul 2013 15:33:33 -0500
+
+apparmor-easyprof-ubuntu (1.0.4) saucy; urgency=low
+
+  * add 'unconfined' template to support special-cased apps that should not
+    run under confinement. This template should not normally be used and
+    any app using it will require manual review.
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Thu, 11 Jul 2013 13:04:57 -0500
+
+apparmor-easyprof-ubuntu (1.0.3) saucy; urgency=low
+
+  * Simplify templates and policy groups. Policy groups should all be
+    optional. This makes it easier for the SDK to consume
+    - collapse templates into the ubuntu-sdk template
+    - move sdk-base and qmlscene* policy into ubuntu-sdk template
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 05 Jul 2013 16:01:08 -0500
+
+apparmor-easyprof-ubuntu (1.0.2) saucy; urgency=low
+
+  * add sdk-base policy group (based on apparmor's ubuntu-sdk-base)
+    - use 'owner' with @{PROC}/cmdline
+    - move gst-plugin-scanner to qmlscene-webview
+    - deny accesses to /dev/log_* (LP: #1197124)
+    - add bug reference for /dev/binder
+    - deny access to /dev/cpuctl/apps/tasks and
+      /dev/cpuctl/apps/bg_non_interactive/tasks
+  * adjust qmlscene to have 'owner "@{HOME}/.local/share/Qt Project/" w,'
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 03 Jul 2013 17:21:09 -0500
+
+apparmor-easyprof-ubuntu (1.0.1) saucy; urgency=low
+
+  * Update templates and policy groups with bug references for various FIXMEs
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Tue, 02 Jul 2013 12:42:08 -0500
+
+apparmor-easyprof-ubuntu (1.0.0) saucy; urgency=low
+
+  * Initial release
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 28 Jun 2013 07:50:18 -0500

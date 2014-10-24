@@ -1,0 +1,5 @@
+  # Nexus 5 (hammerhead)
+  /dev/kgsl-3d0 rw,
+  /dev/ion rw,
+  /sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0/gpuclk r,
+  /sys/devices/fdb[0-9]*.qcom,kgsl-3d0/kgsl/kgsl-3d0/gpuclk r,

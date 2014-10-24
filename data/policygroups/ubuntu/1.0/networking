@@ -1,0 +1,92 @@
+# Description: Can access the network
+# Usage: common
+#include <abstractions/nameservice>
+
+# DownloadManager
+dbus (send)
+     bus=session
+     interface="org.freedesktop.DBus.Introspectable"
+     path=/
+     member=Introspect,
+dbus (send)
+     bus=session
+     interface="org.freedesktop.DBus.Introspectable"
+     path=/com/canonical/applications/download/**
+     member=Introspect,
+# Allow DownloadManager to send us signals, etc
+dbus (receive)
+     bus=session
+     interface=com.canonical.applications.Download{,er}Manager,
+# Restrict apps to just their own downloads
+dbus (receive, send)
+     bus=session
+     path=/com/canonical/applications/download/@{APP_ID_DBUS}/**
+     interface=com.canonical.applications.Download,
+dbus (receive, send)
+     bus=session
+     path=/com/canonical/applications/download/@{APP_ID_DBUS}/**
+     interface=com.canonical.applications.GroupDownload,
+# Be explicit about the allowed members we can send to
+dbus (send)
+     bus=session
+     path=/
+     interface=com.canonical.applications.DownloadManager
+     member=createDownload,
+dbus (send)
+     bus=session
+     path=/
+     interface=com.canonical.applications.DownloadManager
+     member=createDownloadGroup,
+dbus (send)
+     bus=session
+     path=/
+     interface=com.canonical.applications.DownloadManager
+     member=getAllDownloads,
+dbus (send)
+     bus=session
+     path=/
+     interface=com.canonical.applications.DownloadManager
+     member=getAllDownloadsWithMetadata,
+dbus (send)
+     bus=session
+     path=/
+     interface=com.canonical.applications.DownloadManager
+     member=defaultThrottle,
+dbus (send)
+     bus=session
+     path=/
+     interface=com.canonical.applications.DownloadManager
+     member=isGSMDownloadAllowed,
+# Explicitly deny DownloadManager APIs apps shouldn't have access to in order
+# to make sure they aren't accidentally added in the future (see LP: #1277578
+# for details)
+audit deny dbus (send)
+     bus=session
+     interface=com.canonical.applications.DownloadManager
+     member=allowGSMDownload,
+audit deny dbus (send)
+     bus=session
+     interface=com.canonical.applications.DownloadManager
+     member=createMmsDownload,
+audit deny dbus (send)
+     bus=session
+     interface=com.canonical.applications.DownloadManager
+     member=exit,
+audit deny dbus (send)
+     bus=session
+     interface=com.canonical.applications.DownloadManager
+     member=setDefaultThrottle,
+
+# We want to explicitly deny access to NetworkManager because its DBus API
+# gives away too much
+deny dbus (receive, send)
+     bus=system
+     path=/org/freedesktop/NetworkManager,
+deny dbus (receive, send)
+     bus=system
+     peer=(name=org.freedesktop.NetworkManager),
+
+# Do the same for ofono (LP: #1226844)
+deny dbus (receive, send)
+     bus=system
+     interface="org.ofono.Manager",

@@ -1,0 +1,428 @@
+#
+# Example usage for an ubuntu-sdk app 'appname'
+# $ aa-easyprof --template=ubuntu-sdk \
+#               --profile-name=com.example.appname \
+#               -p networking \
+#               --template-var="@{APP_PKGNAME}=appname" \
+#               --template-var="@{APP_VERSION}=0.1" \
+#               "/usr/share/appname/**"
+#
+###ENDUSAGE###
+# vim:syntax=apparmor
+
+#include <tunables/global>
+
+###VAR###
+
+###PROFILEATTACH### (attach_disconnected) {
+  #include <abstractions/base>
+  #include <abstractions/fonts>
+  #include <abstractions/X>
+
+  # Apps fail to start when linked against newer curl/gnutls if we don't allow
+  # this. (LP: #1350152)
+  #include <abstractions/openssl>
+
+  # Needed by native GL applications on Mir
+  owner /{,var/}run/user/*/mir_socket rw,
+
+  # Hardware-specific accesses
+  #include "/usr/share/apparmor/hardware/graphics.d"
+
+  #
+  # IPC rules common for all apps
+  #
+  # Allow connecting to session bus and where to connect to services
+  #include <abstractions/dbus-session-strict>
+
+  # Allow connecting to system bus and where to connect to services. Put these
+  # here so we don't need to repeat these rules in multiple places (actual
+  # communications with any system services is mediated elsewhere). This does
+  # allow apps to brute-force enumerate system services, but our system
+  # services aren't a secret.
+  #include <abstractions/dbus-strict>
+
+  # Unity shell
+  dbus (send)
+       bus=session
+       path="/BottomBarVisibilityCommunicator"
+       interface="org.freedesktop.DBus.{Introspectable,Properties}"
+       peer=(name=com.canonical.Shell.BottomBarVisibilityCommunicator),
+  dbus (receive)
+       bus=session
+       path="/BottomBarVisibilityCommunicator"
+       interface="com.canonical.Shell.BottomBarVisibilityCommunicator",
+
+
+  # Unity HUD
+  dbus (send)
+       bus=session
+       path="/com/canonical/hud"
+       interface="org.freedesktop.DBus.Properties"
+       member="GetAll",
+  dbus (send)
+       bus=session
+       path="/com/canonical/hud"
+       interface="com.canonical.hud"
+       member="RegisterApplication",
+  dbus (receive, send)
+       bus=session
+       path=/com/canonical/hud/applications/@{APP_ID_DBUS}*,
+  dbus (receive)
+       bus=session
+       path="/com/canonical/hud/publisher*"
+       interface="org.gtk.Menus"
+       member="Start",
+  dbus (receive)
+       bus=session
+       path="/com/canonical/hud/publisher*"
+       interface="org.gtk.Menus"
+       member="End",
+  dbus (send)
+       bus=session
+       path="/com/canonical/hud/publisher*"
+       interface="org.gtk.Menus"
+       member="Changed"
+       peer=(name=org.freedesktop.DBus),
+  dbus (receive)
+       bus=session
+       path="/com/canonical/unity/actions"
+       interface=org.gtk.Actions
+       member={DescribeAll,Activate},
+  dbus (send)
+       bus=session
+       path="/com/canonical/unity/actions"
+       interface=org.gtk.Actions
+       member=Changed
+       peer=(name=org.freedesktop.DBus),
+  dbus (receive)
+       bus=session
+       path="/context_*"
+       interface=org.gtk.Actions
+       member="DescribeAll",
+  dbus (receive)
+       bus=session
+       path="/com/canonical/hud"
+       interface="com.canonical.hud"
+       member="UpdatedQuery",
+  dbus (receive)
+       bus=session
+       interface="com.canonical.hud.Awareness"
+       member="CheckAwareness",
+
+  # on screen keyboard (OSK)
+  dbus (send)
+       bus=session
+       path="/org/maliit/server/address"
+       interface="org.freedesktop.DBus.Properties"
+       member=Get
+       peer=(name=org.maliit.server),
+  unix (connect, receive, send)
+       type=stream
+       peer=(addr="@/tmp/maliit-server/dbus-*"),
+
+  # clipboard (LP: #1371170)
+  dbus (receive, send)
+       bus=session
+       path="/com/canonical/QtMir/Clipboard"
+       interface="com.canonical.QtMir.Clipboard",
+  dbus (receive, send)
+       bus=session
+       path="/com/canonical/QtMir/Clipboard"
+       interface="org.freedesktop.DBus.{Introspectable,Properties}",
+
+  # usensors
+  dbus (send)
+       bus=session
+       path=/com/canonical/usensord/haptic
+       interface=com.canonical.usensord.haptic,
+
+  # URL dispatcher. All apps can call this since:
+  # a) the dispatched application is launched out of process and not
+  #    controllable except via the specified URL
+  # b) the list of url types is strictly controlled
+  # c) the dispatched application will launch in the foreground over the
+  #    confined app
+  dbus (send)
+       bus=session
+       path="/com/canonical/URLDispatcher"
+       interface="com.canonical.URLDispatcher"
+       member="DispatchURL",
+
+  # This is needed when the app is already running and needs to be passed in
+  # a URL to open. This is most often used with content-hub providers and
+  # url-dispatcher, but is actually supported by Qt generally (though because
+  # we don't allow the send a malicious app can't send this to another app).
+  dbus (receive)
+       bus=session
+       path=/@{APP_ID_DBUS}
+       interface="org.freedesktop.Application"
+       member="Open",
+
+  # This is needed for apps to interact with the Launcher (eg, for the counter)
+  dbus (receive, send)
+       bus=session
+       path=/com/canonical/unity/launcher/@{APP_ID_DBUS},
+
+  # TODO: finetune this
+  dbus (send)
+       bus=session
+       peer=(name=org.a11y.Bus),
+  dbus (receive)
+       bus=session
+       interface=org.a11y.atspi**,
+  dbus (receive, send)
+       bus=accessibility,
+
+  # Deny potentially dangerous access
+  deny dbus bus=session
+            path=/com/canonical/[Uu]nity/[Dd]ebug**,
+  audit deny dbus bus=session
+                  interface="com.canonical.snapdecisions",
+  deny dbus (send)
+       bus=session
+       interface="org.gnome.GConf.Server",
+
+  #
+  # end DBus rules common for all apps
+  #
+
+  # Don't allow apps to access scope endpoints
+  audit deny /run/user/[0-9]*/zmq/   rw,
+  audit deny /run/user/[0-9]*/zmq/** rwk,
+
+  # Explicitly deny dangerous access
+  audit deny /dev/input/** rw,
+  deny /dev/fb0 rw, # don't use 'audit' since it is too noisy with the camera
+
+  # LP: #1378115
+  deny /run/user/[0-9]*/dconf/user rw,
+  deny owner @{HOME}/.config/dconf/user r,
+  deny /custom/etc/dconf_profile r,
+
+  # subset of GNOME stuff
+  /{,custom/}usr/share/icons/**              r,
+  /{,custom/}usr/share/themes/**             r,
+  /etc/pango/*                               r,
+  /usr/lib{,32,64}/pango/**                  mr,
+  /usr/lib/@{multiarch}/pango/**             mr,
+  /usr/share/icons/*/index.theme             rk,
+  /usr/share/unity/icons/**                  r,
+  /usr/share/thumbnailer/icons/**            r,
+
+  # /custom access
+  /custom/xdg/data/themes/                   r,
+  /custom/xdg/data/themes/**                 r,
+  /custom/usr/share/fonts/                   r,
+  /custom/usr/share/fonts/**                 r,
+
+  # ibus read accesses
+  /usr/lib/@{multiarch}/gtk-2.0/[0-9]*/immodules/im-ibus.so mr,
+  owner @{HOME}/.config/ibus/      r,
+  owner @{HOME}/.config/ibus/bus/  r,
+  owner @{HOME}/.config/ibus/bus/* r,
+  deny  @{HOME}/.config/ibus/bus/  w, # noisy and unneeded
+
+  # subset of freedesktop.org
+  /usr/share/mime/**                 r,
+  owner @{HOME}/.local/share/mime/** r,
+  owner @{HOME}/.config/user-dirs.dirs r,
+
+  /usr/share/glib*/schemas/gschemas.compiled r,
+
+  # various /proc entries (be careful to not allow things that can be used to
+  # enumerate installed apps-- this will be easier once we have a PID kernel
+  # var in AppArmor)
+  @{PROC}/interrupts r,
+  owner @{PROC}/cmdline r,
+  owner @{PROC}/[0-9]*/auxv r,
+  owner @{PROC}/[0-9]*/fd/ r,
+  owner @{PROC}/[0-9]*/status r,
+  owner @{PROC}/[0-9]*/task/ r,
+  owner @{PROC}/[0-9]*/task/[0-9]*/ r,
+  # FIXME: this leaks running process. Is it actually required? AppArmor kernel
+  # var could solve this
+  owner @{PROC}/[0-9]*/cmdline r,
+
+  # libhybris
+  /{,var/}run/shm/hybris_shm_data rw, # FIXME: LP: #1226569 (make app-specific)
+  /usr/lib/@{multiarch}/libhybris/*.so mr,
+  /{,android/}system/build.prop r,
+  # These libraries can be in any of:
+  #  /vendor/lib
+  #  /system/lib
+  #  /system/vendor/lib
+  #  /android/vendor/lib
+  #  /android/system/lib
+  #  /android/system/vendor/lib
+  /{,android/}vendor/lib/**           r,
+  /{,android/}vendor/lib/**.so        m,
+  /{,android/}system/lib/**           r,
+  /{,android/}system/lib/**.so        m,
+  /{,android/}system/vendor/lib/**    r,
+  /{,android/}system/vendor/lib/**.so m,
+
+  # attach_disconnected path
+  /dev/socket/property_service rw,
+
+  # Android logging triggered by platform. Can safely deny
+  # LP: #1197124
+  deny /dev/log_main w,
+  deny /dev/log_radio w,
+  deny /dev/log_events w,
+  deny /dev/log_system w,
+  # LP: #1352432
+  deny /dev/xLog w,
+  deny @{PROC}/xlog/  r,
+  deny @{PROC}/xlog/* rw,
+
+  # Lttng tracing. Can safely deny. LP: #1260491
+  deny /{,var/}run/shm/lttng-ust-* r,
+
+  # TODO: investigate
+  deny /dev/cpuctl/apps/tasks w,
+  deny /dev/cpuctl/apps/bg_non_interactive/tasks w,
+
+  /sys/devices/system/cpu/ r,
+  /sys/kernel/debug/tracing/trace_marker w,
+  # LP: #1286162
+  /etc/udev/udev.conf r,
+  /sys/devices/pci[0-9]*/**/uevent r,
+  # Not required, but noisy
+  deny /run/udev/data/** r,
+
+  #
+  # thumbnailing helper
+  #
+  /usr/lib/@{multiarch}/thumbnailer/vs-thumb ixr,
+  deny @{HOME}/.cache/tncache-write-text.null w, # silence access test
+  # FIXME: this leaks running process. AppArmor kernel var could solve this
+  owner @{PROC}/[0-9]*/attr/current r,
+
+  #
+  # apps may always use vibrations
+  #
+  /sys/class/timed_output/vibrator/enable rw,
+  /sys/devices/virtual/timed_output/vibrator/enable rw,
+
+  #
+  # apps may always use the accelerometer and orientation sensor
+  #
+  /etc/xdg/QtProject/Sensors.conf r,
+
+  #
+  # qmlscene
+  #
+  /usr/share/qtchooser/ r,
+  /usr/share/qtchooser/** r,
+  /usr/lib/@{multiarch}/qt5/bin/qmlscene ixr,
+
+  owner @{HOME}/.config/{UITK,ubuntu-ui-toolkit}/theme.ini rk,
+  audit deny @{HOME}/.config/{UITK,ubuntu-ui-toolkit}/theme.ini w,
+
+  #
+  # cordova-ubuntu
+  #
+  /usr/share/cordova-ubuntu*/      r,
+  /usr/share/cordova-ubuntu*/**    r,
+
+  #
+  # ubuntu-html5-app-launcher
+  #
+  /usr/share/ubuntu-html5-app-launcher/   r,
+  /usr/share/ubuntu-html5-app-launcher/** r,
+  /usr/share/ubuntu-html5-ui-toolkit/   r,
+  /usr/share/ubuntu-html5-ui-toolkit/** r,
+
+  # Launching under upstart requires this
+  /usr/bin/qtchooser rmix,
+  /usr/bin/cordova-ubuntu* rmix,
+  /usr/bin/ubuntu-html5-app-launcher rmix,
+
+  # qmlscene webview
+  # TODO: these should go away once /usr/bin/ubuntu-html5-app-launcher uses
+  # Oxide
+  /usr/lib/@{multiarch}/qt5/libexec/QtWebProcess rmix,
+  /usr/share/qtdeclarative5-ubuntu-ui-extras-browser-plugin/ r,
+  /usr/share/qtdeclarative5-ubuntu-ui-extras-browser-plugin/** r,
+  /usr/share/qtdeclarative5-ubuntu-web-plugin/ r,
+  /usr/share/qtdeclarative5-ubuntu-web-plugin/** r,
+
+  /usr/lib/@{multiarch}/gstreamer*/gstreamer*/gst-plugin-scanner rix,
+
+  # GStreamer binary registry - hybris pulls this in for everything now, not
+  # just audio
+  owner @{HOME}/.gstreamer*/registry.*.bin*       r,
+  deny @{HOME}/.gstreamer*/registry.*.bin*        w,
+  deny @{HOME}/.gstreamer*/                       w,
+  owner @{HOME}/.cache/gstreamer*/registry.*.bin* r,
+  deny @{HOME}/.cache/gstreamer*/registry.*.bin*  w,
+  deny @{HOME}/.cache/gstreamer*/                 w,
+  # gstreamer writes JIT compiled code in the form of orcexec.* files. Various
+  # locations are tried so silence the ones we won't permit anyway
+  deny /tmp/orcexec* w,
+  deny /{,var/}run/user/*/orcexec* w,
+  deny @{HOME}/orcexec* w,
+
+  /{,android/}system/etc/media_codecs.xml r,
+  /etc/wildmidi/wildmidi.cfg r,
+
+  # Don't allow plugins in webviews for now
+  deny /usr/lib/@{multiarch}/qt5/libexec/QtWebPluginProcess rx,
+
+  # cordova-ubuntu wants to runs lsb_release, which is a python program and we
+  # don't want to give access to that. cordova-ubuntu will fallback to
+  # examining /etc/lsb-release directly, which is ok. If needed, we can lift
+  # the denial and ship a profile for lsb_release and add a Pxr rule
+  deny /usr/bin/lsb_release rx,
+  /etc/ r,
+  /etc/lsb-release r,
+
+  #
+  # Application install dirs
+  #
+
+  # Click packages
+  @{CLICK_DIR}/@{APP_PKGNAME}/                   r,
+  @{CLICK_DIR}/@{APP_PKGNAME}/@{APP_VERSION}/    r,
+  @{CLICK_DIR}/@{APP_PKGNAME}/@{APP_VERSION}/**  mrklix,
+
+  # Packages shipped as debs have their install directory in /usr/share
+  /usr/share/@{APP_PKGNAME}/ r,
+  /usr/share/@{APP_PKGNAME}/** mrklix,
+
+  #
+  # Application writable dirs
+  #
+
+  # FIXME: LP: #1197060, LP: #1377648 (don't remove until qtwebkit is off the
+  #        image)
+  owner /{,run/}shm/WK2SharedMemory.[0-9]* rwk,
+
+  # FIXME: LP: #1370218
+  owner /{run,dev}/shm/shmfd-* rwk,
+
+  # Allow writes to various (application-specific) XDG directories
+  owner @{HOME}/.cache/@{APP_PKGNAME}/                  rw,      # subdir of XDG_CACHE_HOME
+  owner @{HOME}/.cache/@{APP_PKGNAME}/**                mrwkl,
+  owner @{HOME}/.config/@{APP_PKGNAME}/                 rw,      # subdir of XDG_CONFIG_HOME
+  owner @{HOME}/.config/@{APP_PKGNAME}/**               mrwkl,
+  owner @{HOME}/.local/share/@{APP_PKGNAME}/            rw,      # subdir of XDG_DATA_HOME
+  owner @{HOME}/.local/share/@{APP_PKGNAME}/**          mrwklix,
+  owner /{,var/}run/user/*/@{APP_PKGNAME}/              rw,      # subdir of XDG_RUNTIME_DIR
+  owner /{,var/}run/user/*/@{APP_PKGNAME}/**            mrwkl,
+  owner /{,var/}run/user/*/confined/@{APP_PKGNAME}/     rw,      # subdir of XDG_RUNTIME_DIR (for TMPDIR)
+  owner /{,var/}run/user/*/confined/@{APP_PKGNAME}/**   mrwkl,
+
+  # Allow writes to application-specific QML cache directories
+  owner @{HOME}/.cache/QML/Apps/@{APP_PKGNAME}_@{APP_APPNAME}_@{APP_VERSION}/   rw,
+  owner @{HOME}/.cache/QML/Apps/@{APP_PKGNAME}_@{APP_APPNAME}_@{APP_VERSION}/** mrwkl,
+
+  ###ABSTRACTIONS###
+
+  ###POLICYGROUPS###
+
+  ###READS###
+
+  ###WRITES###
+}

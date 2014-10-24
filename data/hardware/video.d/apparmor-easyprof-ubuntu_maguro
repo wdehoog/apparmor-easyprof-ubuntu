@@ -1,0 +1,3 @@
+  # Galaxy Nexus specific (maguro)
+  /dev/rproc_user rw,
+  /dev/rpmsg-omx[0-9] rw,

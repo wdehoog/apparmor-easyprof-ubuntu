@@ -1,0 +1,5 @@
+# Description: Can access coarse network connectivity information
+# Usage: common
+dbus (receive, send)
+     bus=session
+     path=/com/ubuntu/connectivity1/NetworkingStatus,

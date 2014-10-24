@@ -1,0 +1,3 @@
+data/templates/* /usr/share/apparmor/easyprof/templates
+data/policygroups/* /usr/share/apparmor/easyprof/policygroups
+data/hardware/* /usr/share/apparmor/hardware

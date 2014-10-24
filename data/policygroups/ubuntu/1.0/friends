@@ -1,0 +1,65 @@
+# Description: Can use Friends social network service. This policy group is
+#  reserved for vetted applications only in this version of the policy. Once
+#  LP: #1231737 is fixed, this can be moved out of reserved status.
+# Usage: reserved
+
+dbus (send)
+    path=/com/canonical/friends/Dispatcher
+    interface=org.freedesktop.DBus.Properties,
+dbus (send)
+    path=/com/canonical/friends/Dispatcher
+    peer=(name=com.canonical.Friends.Dispatcher),
+dbus (send)
+     bus=session
+     path=/org/freedesktop/DBus
+     interface=org.freedesktop.DBus
+     member=RequestName
+     peer=(name=org.freedesktop.DBus),
+dbus (bind)
+     bus=session
+     name=com.canonical.Friends.Streams,
+dbus (send)
+     bus=session
+     path=/com/canonical/dee/peer/com/canonical/Friends/Streams
+     interface=com.canonical.Dee.Peer
+     peer=(name=com.canonical.Friends.Streams),
+dbus (receive)
+     bus=session
+     path=/com/canonical/dee/peer/com/canonical/Friends/Streams
+     interface=com.canonical.Dee.Peer,
+dbus (send)
+     bus=session
+     path=/com/canonical/dee/model/com/canonical/Friends/Streams
+     interface=com.canonical.Dee.Model
+     peer=(name=com.canonical.Friends.Streams),
+dbus (receive)
+     bus=session
+     path=/com/canonical/dee/model/com/canonical/Friends/Streams
+     interface=com.canonical.Dee.Model,
+
+  # Access required for using freedesktop notifications
+  # (perhaps move out to templates?)
+  dbus (send)
+       bus=session
+       path=/org/freedesktop/Notifications
+       member=GetServerInformation,
+  dbus (send)
+       bus=session
+       path=/org/freedesktop/Notifications
+       member=Notify,
+  dbus (receive)
+       bus=session
+       member="Notify"
+       peer=(name="org.freedesktop.DBus"),
+  dbus (receive)
+       bus=session
+       path=/org/freedesktop/Notifications
+       member=NotificationClosed,
+  dbus (send)
+       bus=session
+       path=/org/freedesktop/Notifications
+       member=CloseNotification,
+  dbus (receive)
+       bus=session
+       path=/org/freedesktop/Notifications
+       member=dataChanged,

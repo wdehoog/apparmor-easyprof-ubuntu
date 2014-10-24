@@ -1,0 +1,35 @@
+# Description: Can access the microphone
+# Usage: common
+# Don't include the audio abstraction and enforce use of pulse instead
+/etc/pulse/ r,
+/etc/pulse/* r,
+/{run,dev}/shm/                    r,  # could allow enumerating apps
+owner /{run,dev}/shm/pulse-shm*    rk,
+deny /{run,dev}/shm/pulse-shm*     w,  # deny unless we have to have it
+owner @{HOME}/.pulse-cookie        rk,
+owner @{HOME}/.pulse/              r,
+owner @{HOME}/.pulse/*             rk,
+owner /{,var/}run/user/*/pulse/       r,
+owner /{,var/}run/user/*/pulse/       w,   # shouldn't be needed, but rmdir fail otherwise
+owner /{,var/}run/user/*/pulse/native rwk, # cli and dbus-socket should not be
+                                           # used by confined apps
+owner @{HOME}/.config/pulse/cookie rk,
+
+# QAudioRecorder needs this. We might have to allow this later, but for now
+# just silence the denial
+deny /dev/ r,
+
+# gstreamer - should these be application specific?
+owner @{HOME}/.gstreamer*/registry.*.bin* r,
+deny @{HOME}/.gstreamer*/registry.*.bin* w,
+deny @{HOME}/.gstreamer*/                w,
+# gstreamer writes JIT compiled code in the form of orcexec.* files. Various
+# locations are tried so silence the ones we won't permit anyway
+deny /tmp/orcexec* w,
+deny /{,var/}run/user/*/orcexec* w,
+deny @{HOME}/orcexec* w,
+
+# Force the use of pulseaudio and silence any denials for ALSA
+deny /usr/share/alsa/alsa.conf r,
+deny /dev/snd/ r,
+deny /dev/snd/* r,

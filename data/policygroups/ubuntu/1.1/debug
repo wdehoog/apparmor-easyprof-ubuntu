@@ -1,0 +1,21 @@
+# Description: Use special debugging tools. This should only be used in
+#  development and not for production packages. Note: use of this policy group
+#  provides significantly different confinement than normal and is not
+#  considered secure. You should never run untrusted programs using this policy
+#  group.
+# Usage: reserved
+
+# Allow full debugging environment
+#include <abstractions/bash>
+#include <abstractions/python>
+#include <abstractions/user-tmp>
+
+/    r,
+/**/ r,
+
+# SDK does an os.listdir() on this directory to determine if confined
+audit deny @{HOME}/.local/share/ r,
+
+# list of debugging tools
+/usr{,/local}/bin/gdb Ux,
+/usr{,/local}/bin/gdbserver Ux,

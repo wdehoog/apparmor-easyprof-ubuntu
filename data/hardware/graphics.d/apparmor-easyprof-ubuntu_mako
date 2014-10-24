@@ -1,0 +1,4 @@
+  # Nexus 4 (mako)
+  /dev/kgsl-3d0 rw,
+  /dev/ion rw,
+  /sys/devices/platform/kgsl-3d0.0/kgsl/kgsl-3d0/gpuclk r,

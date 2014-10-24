@@ -1,0 +1,4 @@
+# Description: Can access the sensors
+# Usage: common
+# android-based access. Remove once move away from audio flinger (LP: #1197134)
+/dev/binder rw,

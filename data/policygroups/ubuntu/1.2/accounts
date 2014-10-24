@@ -1,0 +1,48 @@
+# Description: Can use Online Accounts.
+# Usage: common
+/usr/share/accounts/** r,
+
+dbus (receive, send)
+     bus=session
+     path=/com/google/code/AccountsSSO/SingleSignOn
+     interface=com.google.code.AccountsSSO.SingleSignOn.AuthService,
+dbus (receive, send)
+     bus=session
+     path=/com/google/code/AccountsSSO/SingleSignOn{,/**}
+     interface=org.freedesktop.DBus.Properties,
+dbus (receive, send)
+     bus=session
+     interface=com.google.code.AccountsSSO.SingleSignOn.AuthSession,
+dbus (receive, send)
+     bus=session
+     interface=com.google.code.AccountsSSO.SingleSignOn.Identity,
+dbus (receive, send)
+     bus=session
+     interface=com.ubuntu.OnlineAccountsUi,
+dbus (receive)
+     bus=session
+     interface=com.google.code.AccountsSSO.Accounts,
+
+# p2p support uses a named unix socket
+owner /{,var/}run/user/*/signond/socket w,
+
+# read access to accounts.db is ok
+owner @{HOME}/.config/libaccounts-glib/accounts.db* rk,
+# FIXME: LP: #1220713 - online accounts currently tries rw and falls back to
+#        ro. This can go away once an access() LSM hook is implemented. For
+#        now, just silence the denial.
+deny @{HOME}/.config/libaccounts-glib/accounts.db* w,
+
+# apps will dereference the symlinks in this directory to access their own
+# accounts provider (which is in an app-specific directory). This is not an
+# information leak on its own because users of this policy group have read
+# access to accounts.db.
+owner @{HOME}/.local/share/accounts/** r,
+
+# Note: this API should *not* be allowed to normal apps, only the
+# webapp-container. As such, we can't explicitly deny access here but it is
+# listed as a comment to make sure it isn't accidentally added in the future.
+# audit deny dbus (receive, send)
+#                 bus=session
+#                 interface=com.nokia.singlesignonui
+#                 member=cookiesForIdentity,

@@ -1,0 +1,39 @@
+# Description: Can play video (allows playing remote content via media-hub)
+# Usage: common
+# android-based access. Remove once move away from binder (LP: #1197134)
+/dev/binder rw,
+/dev/ashmem rw,
+
+# gstreamer - should these be application specific?
+owner @{HOME}/.gstreamer*/registry.*.bin*       r,
+owner @{HOME}/.cache/gstreamer*/registry.*.bin* r,
+deny @{HOME}/.gstreamer*/registry.*.bin*        w,
+deny @{HOME}/.cache/gstreamer*/registry.*.bin*  w,
+deny @{HOME}/.gstreamer*/                       w,
+deny @{HOME}/.cache/gstreamer*/                 w,
+# gstreamer writes JIT compiled code in the form of orcexec.* files. Various
+# locations are tried so silence the ones we won't permit anyway
+deny /tmp/orcexec* w,
+deny /{,var/}run/user/*/orcexec* w,
+
+# Allow communications with media-hub
+dbus (receive, send)
+     bus=session
+     path=/core/ubuntu/media/Service{,/**},
+
+# Allow communications with mediascanner2
+dbus (send)
+     bus=session
+     path=/com/canonical/MediaScanner2
+     interface=com.canonical.MediaScanner2,
+dbus (receive)
+     bus=session
+     peer=(label=/usr/bin/mediascanner-service-2.0),
+
+# converged desktop
+#include <abstractions/video>
+/dev/video*                         r,
+/sys/devices/**/video4linux/video** r,
+
+# Hardware-specific accesses
+#include "/usr/share/apparmor/hardware/video.d"
