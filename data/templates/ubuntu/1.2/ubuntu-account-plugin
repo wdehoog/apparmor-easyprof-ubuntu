@@ -1,0 +1,251 @@
+#
+# Example usage for an ubuntu-account-plugin app 'appname'
+# $ aa-easyprof --template=ubuntu-account-plugin \
+#               --profile-name=com.example.appname \
+#               -p networking \
+#               --template-var="@{APP_PKGNAME}=appname" \
+#               --template-var="@{APP_VERSION}=0.1" \
+#               "/usr/share/appname/**"
+#
+###ENDUSAGE###
+# vim:syntax=apparmor
+
+#include <tunables/global>
+
+###VAR###
+
+###PROFILEATTACH### (attach_disconnected) {
+  #include <abstractions/base>
+  #include <abstractions/fonts>
+  #include <abstractions/X>
+
+  # Apps fail to start when linked against newer curl/gnutls if we don't allow
+  # this. (LP: #1350152)
+  #include <abstractions/openssl>
+
+  # Needed by native GL applications on Mir
+  owner /{,var/}run/user/*/mir_socket rw,
+
+  # Hardware-specific accesses
+  #include "/usr/share/apparmor/hardware/graphics.d"
+
+  #
+  # IPC rules common for all apps
+  #
+  # Allow connecting to session bus and where to connect to services
+  #include <abstractions/dbus-session-strict>
+
+  # Allow connecting to system bus and where to connect to services. Put these
+  # here so we don't need to repeat these rules in multiple places (actual
+  # communications with any system services is mediated elsewhere). This does
+  # allow apps to brute-force enumerate system services, but our system
+  # services aren't a secret.
+  #include <abstractions/dbus-strict>
+
+  # on screen keyboard (OSK)
+  dbus (send)
+       bus=session
+       path="/org/maliit/server/address"
+       interface="org.freedesktop.DBus.Properties"
+       member=Get
+       peer=(name=org.maliit.server,label=unconfined),
+  unix (connect, receive, send)
+       type=stream
+       peer=(addr="@/tmp/maliit-server/dbus-*"),
+
+  # clipboard (LP: #1371170)
+  dbus (receive, send)
+       bus=session
+       path="/com/canonical/QtMir/Clipboard"
+       interface="com.canonical.QtMir.Clipboard"
+       peer=(label=unconfined),
+  dbus (receive, send)
+       bus=session
+       path="/com/canonical/QtMir/Clipboard"
+       interface="org.freedesktop.DBus.{Introspectable,Properties}"
+       peer=(label=unconfined),
+
+  # TODO: finetune this
+  dbus (send)
+       bus=session
+       peer=(name=org.a11y.Bus,label=unconfined),
+  dbus (receive)
+       bus=session
+       interface=org.a11y.atspi**
+       peer=(label=unconfined),
+  dbus (receive, send)
+       bus=accessibility
+       peer=(label=unconfined),
+
+  # Deny potentially dangerous access
+  deny dbus bus=session
+            path=/com/canonical/[Uu]nity/[Dd]ebug**,
+  audit deny dbus bus=session
+                  interface="com.canonical.snapdecisions",
+  deny dbus (send)
+       bus=session
+       interface="org.gnome.GConf.Server",
+
+  # LP: #1378823
+  deny dbus (bind)
+       name="org.freedesktop.Application",
+
+  #
+  # end DBus rules common for all apps
+  #
+
+  # Don't allow apps to access scope endpoints
+  audit deny /run/user/[0-9]*/zmq/   rw,
+  audit deny /run/user/[0-9]*/zmq/** rwk,
+
+  # Explicitly deny dangerous access
+  audit deny /dev/input/** rw,
+  deny /dev/fb0 rw, # don't use 'audit' since it is too noisy with the camera
+
+  # LP: #1378115
+  deny /run/user/[0-9]*/dconf/user rw,
+  deny owner @{HOME}/.config/dconf/user r,
+  deny /custom/etc/dconf_profile r,
+
+  # LP: #1381620
+  deny @{HOME}/.cache/QML/Apps/ r,
+
+  # subset of GNOME stuff
+  /{,custom/}usr/share/icons/**              r,
+  /{,custom/}usr/share/themes/**             r,
+  /etc/pango/*                               r,
+  /usr/lib{,32,64}/pango/**                  mr,
+  /usr/lib/@{multiarch}/pango/**             mr,
+  /usr/share/icons/*/index.theme             rk,
+  /usr/share/unity/icons/**                  r,
+  /usr/share/thumbnailer/icons/**            r,
+
+  # /custom access
+  /custom/xdg/data/themes/                   r,
+  /custom/xdg/data/themes/**                 r,
+  /custom/usr/share/fonts/                   r,
+  /custom/usr/share/fonts/**                 r,
+
+  # ibus read accesses
+  /usr/lib/@{multiarch}/gtk-2.0/[0-9]*/immodules/im-ibus.so mr,
+  owner @{HOME}/.config/ibus/      r,
+  owner @{HOME}/.config/ibus/bus/  r,
+  owner @{HOME}/.config/ibus/bus/* r,
+  deny  @{HOME}/.config/ibus/bus/  w, # noisy and unneeded
+
+  # subset of freedesktop.org
+  /usr/share/mime/**                 r,
+  owner @{HOME}/.local/share/mime/** r,
+  owner @{HOME}/.config/user-dirs.dirs r,
+
+  /usr/share/glib*/schemas/gschemas.compiled r,
+
+  # various /proc entries (be careful to not allow things that can be used to
+  # enumerate installed apps-- this will be easier once we have a PID kernel
+  # var in AppArmor)
+  @{PROC}/interrupts r,
+  owner @{PROC}/cmdline r,
+  owner @{PROC}/[0-9]*/auxv r,
+  owner @{PROC}/[0-9]*/fd/ r,
+  owner @{PROC}/[0-9]*/status r,
+  owner @{PROC}/[0-9]*/task/ r,
+  owner @{PROC}/[0-9]*/task/[0-9]*/ r,
+  # FIXME: this leaks running process. Is it actually required? AppArmor kernel
+  # var could solve this
+  owner @{PROC}/[0-9]*/cmdline r,
+
+  # libhybris
+  /{,var/}run/shm/hybris_shm_data rw, # FIXME: LP: #1226569 (make app-specific)
+  /usr/lib/@{multiarch}/libhybris/*.so mr,
+  /{,android/}system/build.prop r,
+  # These libraries can be in any of:
+  #  /vendor/lib
+  #  /system/lib
+  #  /system/vendor/lib
+  #  /android/vendor/lib
+  #  /android/system/lib
+  #  /android/system/vendor/lib
+  /{,android/}vendor/lib/**           r,
+  /{,android/}vendor/lib/**.so        m,
+  /{,android/}system/lib/**           r,
+  /{,android/}system/lib/**.so        m,
+  /{,android/}system/vendor/lib/**    r,
+  /{,android/}system/vendor/lib/**.so m,
+
+  # attach_disconnected path
+  /dev/socket/property_service rw,
+
+  # Android logging triggered by platform. Can safely deny
+  # LP: #1197124
+  deny /dev/log_main w,
+  deny /dev/log_radio w,
+  deny /dev/log_events w,
+  deny /dev/log_system w,
+  # LP: #1352432
+  deny /dev/xLog w,
+  deny @{PROC}/xlog/  r,
+  deny @{PROC}/xlog/* rw,
+
+  # Lttng tracing. Can safely deny. LP: #1260491
+  deny /{,var/}run/shm/lttng-ust-* r,
+
+  # TODO: investigate
+  deny /dev/cpuctl/apps/tasks w,
+  deny /dev/cpuctl/apps/bg_non_interactive/tasks w,
+
+  /sys/devices/system/cpu/ r,
+  /sys/kernel/debug/tracing/trace_marker w,
+  # LP: #1286162
+  /etc/udev/udev.conf r,
+  /sys/devices/pci[0-9]*/**/uevent r,
+  # Not required, but noisy
+  deny /run/udev/data/** r,
+
+  #
+  # qmlscene
+  #
+  /usr/share/qtchooser/ r,
+  /usr/share/qtchooser/** r,
+  /usr/lib/@{multiarch}/qt5/bin/qmlscene ixr,
+
+  owner @{HOME}/.config/{UITK,ubuntu-ui-toolkit}/theme.ini rk,
+  audit deny @{HOME}/.config/{UITK,ubuntu-ui-toolkit}/theme.ini w,
+
+  # Launching under upstart requires this
+  /usr/bin/qtchooser rmix,
+
+  #
+  # Application install dirs
+  #
+
+  # Click packages
+  @{CLICK_DIR}/@{APP_PKGNAME}/                   r,
+  @{CLICK_DIR}/@{APP_PKGNAME}/@{APP_VERSION}/    r,
+  @{CLICK_DIR}/@{APP_PKGNAME}/@{APP_VERSION}/**  mrklix,
+
+  # Packages shipped as debs have their install directory in /usr/share
+  /usr/share/@{APP_PKGNAME}/ r,
+  /usr/share/@{APP_PKGNAME}/** mrklix,
+
+  #
+  # Application writable dirs
+  #
+
+  owner /{,var/}run/user/*/online-accounts-ui/ui-*-@{APP_PKGNAME}_@{APP_APPNAME} rw,
+  owner @{HOME}/.cache/online-accounts-ui/id-*-@{APP_PKGNAME}_@{APP_APPNAME}/ rw,
+  owner @{HOME}/.cache/online-accounts-ui/id-*-@{APP_PKGNAME}_@{APP_APPNAME}/** mrwkl,
+  dbus (send)
+       bus=session
+       path="/com/google/code/AccountsSSO/Accounts/Manager"
+       interface="com.google.code.AccountsSSO.Accounts.Manager"
+       member="store"
+       peer=(name=com.google.code.AccountsSSO.Accounts.Manager,label=unconfined),
+
+  ###ABSTRACTIONS###
+
+  ###POLICYGROUPS###
+
+  ###READS###
+
+  ###WRITES###
+}
