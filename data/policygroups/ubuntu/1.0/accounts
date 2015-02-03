@@ -31,8 +31,8 @@ dbus (receive)
      interface=com.google.code.AccountsSSO.Accounts
      peer=(label=unconfined),
 
-# p2p support uses a named unix socket
-owner /{,var/}run/user/*/signond/socket w,
+# p2p support uses a named unix socket, available only to unconfined apps.
+deny /{,var/}run/user/*/signond/socket w,
 
 # read access to accounts.db is ok
 owner @{HOME}/.config/libaccounts-glib/accounts.db* rk,
