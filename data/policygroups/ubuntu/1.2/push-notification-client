@@ -4,12 +4,14 @@
 dbus (receive, send)
      bus=session
      interface=com.ubuntu.PushNotifications
-     path=/com/ubuntu/PushNotifications/@{APP_PKGNAME_DBUS}{,/**},
+     path=/com/ubuntu/PushNotifications/@{APP_PKGNAME_DBUS}{,/**}
+     peer=(label=unconfined),
 
 dbus (receive, send)
      bus=session
      interface=com.ubuntu.Postal
-     path=/com/ubuntu/Postal/@{APP_PKGNAME_DBUS}{,/**},
+     path=/com/ubuntu/Postal/@{APP_PKGNAME_DBUS}{,/**}
+     peer=(label=unconfined),
 
 # Some push helpers are written in python. This isn't strictly allowed since
 # frameworks don't support yet, but silence these to avoid confusion

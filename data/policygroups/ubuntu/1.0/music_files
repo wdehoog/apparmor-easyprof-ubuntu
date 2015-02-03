@@ -5,3 +5,6 @@
 # Usage: reserved
 owner @{HOME}/Music/   r,
 owner @{HOME}/Music/** rwk,
+# SD card: /media/<user>/<label>/...
+owner /media/*/*/[Mm][Uu][Ss][Ii][Cc]/      r,
+owner /media/*/*/[Mm][Uu][Ss][Ii][Cc]/**    rwk,

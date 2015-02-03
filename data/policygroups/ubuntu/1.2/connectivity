@@ -2,4 +2,5 @@
 # Usage: common
 dbus (receive, send)
      bus=session
-     path=/com/ubuntu/connectivity1/NetworkingStatus,
+     path=/com/ubuntu/connectivity1/NetworkingStatus
+     peer=(label=unconfined),

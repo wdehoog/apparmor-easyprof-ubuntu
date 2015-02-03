@@ -3,4 +3,4 @@
 dbus (send)
     bus=system
     path=/com/canonical/UserMetrics**
-    peer=(name=com.canonical.UserMetrics),
+    peer=(name=com.canonical.UserMetrics,label=unconfined),

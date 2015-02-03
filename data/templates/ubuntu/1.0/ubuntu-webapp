@@ -50,11 +50,12 @@
        bus=session
        path="/BottomBarVisibilityCommunicator"
        interface="org.freedesktop.DBus.{Introspectable,Properties}"
-       peer=(name=com.canonical.Shell.BottomBarVisibilityCommunicator),
+       peer=(name=com.canonical.Shell.BottomBarVisibilityCommunicator,label=unconfined),
   dbus (receive)
        bus=session
        path="/BottomBarVisibilityCommunicator"
-       interface="com.canonical.Shell.BottomBarVisibilityCommunicator",
+       interface="com.canonical.Shell.BottomBarVisibilityCommunicator"
+       peer=(label=unconfined),
 
 
   # Unity HUD
@@ -62,56 +63,65 @@
        bus=session
        path="/com/canonical/hud"
        interface="org.freedesktop.DBus.Properties"
-       member="GetAll",
+       member="GetAll"
+       peer=(label=unconfined),
   dbus (send)
        bus=session
        path="/com/canonical/hud"
        interface="com.canonical.hud"
-       member="RegisterApplication",
+       member="RegisterApplication"
+       peer=(label=unconfined),
   dbus (receive, send)
        bus=session
-       path=/com/canonical/hud/applications/@{APP_ID_DBUS}*,
+       path=/com/canonical/hud/applications/@{APP_ID_DBUS}*
+       peer=(label=unconfined),
   dbus (receive)
        bus=session
        path="/com/canonical/hud/publisher*"
        interface="org.gtk.Menus"
-       member="Start",
+       member="Start"
+       peer=(label=unconfined),
   dbus (receive)
        bus=session
        path="/com/canonical/hud/publisher*"
        interface="org.gtk.Menus"
-       member="End",
+       member="End"
+       peer=(label=unconfined),
   dbus (send)
        bus=session
        path="/com/canonical/hud/publisher*"
        interface="org.gtk.Menus"
        member="Changed"
-       peer=(name=org.freedesktop.DBus),
+       peer=(name=org.freedesktop.DBus,label=unconfined),
   dbus (receive)
        bus=session
        path="/com/canonical/unity/actions"
        interface=org.gtk.Actions
-       member={DescribeAll,Activate},
+       member={DescribeAll,Activate}
+       peer=(label=unconfined),
   dbus (send)
        bus=session
        path="/com/canonical/unity/actions"
        interface=org.gtk.Actions
        member=Changed
-       peer=(name=org.freedesktop.DBus),
+       peer=(name=org.freedesktop.DBus,label=unconfined),
   dbus (receive)
        bus=session
        path="/context_*"
        interface=org.gtk.Actions
-       member="DescribeAll",
+       member="DescribeAll"
+       peer=(label=unconfined),
   dbus (receive)
        bus=session
        path="/com/canonical/hud"
        interface="com.canonical.hud"
-       member="UpdatedQuery",
+       member="UpdatedQuery"
+       peer=(label=unconfined),
   dbus (receive)
        bus=session
        interface="com.canonical.hud.Awareness"
-       member="CheckAwareness",
+       member="CheckAwareness"
+       peer=(label=unconfined),
 
   # on screen keyboard (OSK)
   dbus (send)
@@ -119,7 +129,7 @@
        path="/org/maliit/server/address"
        interface="org.freedesktop.DBus.Properties"
        member=Get
-       peer=(name=org.maliit.server),
+       peer=(name=org.maliit.server,label=unconfined),
   unix (connect, receive, send)
        type=stream
        peer=(addr="@/tmp/maliit-server/dbus-*"),
@@ -128,17 +138,20 @@
   dbus (receive, send)
        bus=session
        path="/com/canonical/QtMir/Clipboard"
-       interface="com.canonical.QtMir.Clipboard",
+       interface="com.canonical.QtMir.Clipboard"
+       peer=(label=unconfined),
   dbus (receive, send)
        bus=session
        path="/com/canonical/QtMir/Clipboard"
-       interface="org.freedesktop.DBus.{Introspectable,Properties}",
+       interface="org.freedesktop.DBus.{Introspectable,Properties}"
+       peer=(label=unconfined),
 
   # usensors
   dbus (send)
        bus=session
        path=/com/canonical/usensord/haptic
-       interface=com.canonical.usensord.haptic,
+       interface=com.canonical.usensord.haptic
+       peer=(label=unconfined),
 
   # URL dispatcher. All apps can call this since:
   # a) the dispatched application is launched out of process and not
@@ -150,7 +163,8 @@
        bus=session
        path="/com/canonical/URLDispatcher"
        interface="com.canonical.URLDispatcher"
-       member="DispatchURL",
+       member="DispatchURL"
+       peer=(label=unconfined),
 
   # This is needed when the app is already running and needs to be passed in
   # a URL to open. This is most often used with content-hub providers and
@@ -160,17 +174,20 @@
        bus=session
        path=/@{APP_ID_DBUS}
        interface="org.freedesktop.Application"
-       member="Open",
+       member="Open"
+       peer=(label=unconfined),
 
   # TODO: finetune this
   dbus (send)
        bus=session
-       peer=(name=org.a11y.Bus),
+       peer=(name=org.a11y.Bus,label=unconfined),
   dbus (receive)
        bus=session
-       interface=org.a11y.atspi**,
+       interface=org.a11y.atspi**
+       peer=(label=unconfined),
   dbus (receive, send)
-       bus=accessibility,
+       bus=accessibility
+       peer=(label=unconfined),
 
   # Deny potentially dangerous access
   deny dbus bus=session
@@ -332,7 +349,8 @@
   dbus (receive, send)
        bus=session
        interface=com.nokia.singlesignonui
-       member=cookiesForIdentity,
+       member=cookiesForIdentity
+       peer=(label=unconfined),
 
 
   # GStreamer binary registry - hybris pulls this in for everything now, not

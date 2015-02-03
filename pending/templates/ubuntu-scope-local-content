@@ -96,6 +96,15 @@
   owner /run/user/[0-9]*/scopes/leaf-fs/@{APP_PKGNAME}_@{APP_APPNAME}/   rw,
   owner /run/user/[0-9]*/scopes/leaf-fs/@{APP_PKGNAME}_@{APP_APPNAME}/** mrwkl,
 
+  # Allow scopes to read from apps shipped in the same click
+  owner @{HOME}/.local/share/@{APP_PKGNAME}/ r,
+  owner @{HOME}/.local/share/@{APP_PKGNAME}/** mrkl,
+  # Don't allow writes to this directory since we are differently confined than
+  # the app and allowing writes to this directory would effectively give the
+  # app access to all files allowed by this template, thus escaping
+  # confinement.
+  audit deny @{HOME}/.local/share/@{APP_PKGNAME}/** w,
+
   # Public endpoints
   # all scopes should be able to access the reply endpoints (the scopes-api
   # protects against abuse, see LP: #1347177)

@@ -7,58 +7,69 @@ dbus (send)
      bus=session
      interface="org.freedesktop.DBus.Introspectable"
      path=/
-     member=Introspect,
+     member=Introspect
+     peer=(label=unconfined),
 dbus (send)
      bus=session
      interface="org.freedesktop.DBus.Introspectable"
      path=/com/canonical/applications/download/**
-     member=Introspect,
+     member=Introspect
+     peer=(label=unconfined),
 # Allow DownloadManager to send us signals, etc
 dbus (receive)
      bus=session
-     interface=com.canonical.applications.Download{,er}Manager,
+     interface=com.canonical.applications.Download{,er}Manager
+     peer=(label=unconfined),
 # Restrict apps to just their own downloads
 owner @{HOME}/.local/share/ubuntu-download-manager/@{APP_PKGNAME}/   rw,
 owner @{HOME}/.local/share/ubuntu-download-manager/@{APP_PKGNAME}/** rwk,
 dbus (receive, send)
      bus=session
      path=/com/canonical/applications/download/@{APP_ID_DBUS}/**
-     interface=com.canonical.applications.Download,
+     interface=com.canonical.applications.Download
+     peer=(label=unconfined),
 dbus (receive, send)
      bus=session
      path=/com/canonical/applications/download/@{APP_ID_DBUS}/**
-     interface=com.canonical.applications.GroupDownload,
+     interface=com.canonical.applications.GroupDownload
+     peer=(label=unconfined),
 # Be explicit about the allowed members we can send to
 dbus (send)
      bus=session
      path=/
      interface=com.canonical.applications.DownloadManager
-     member=createDownload,
+     member=createDownload
+     peer=(label=unconfined),
 dbus (send)
      bus=session
      path=/
      interface=com.canonical.applications.DownloadManager
-     member=createDownloadGroup,
+     member=createDownloadGroup
+     peer=(label=unconfined),
 dbus (send)
      bus=session
      path=/
      interface=com.canonical.applications.DownloadManager
-     member=getAllDownloads,
+     member=getAllDownloads
+     peer=(label=unconfined),
 dbus (send)
      bus=session
      path=/
      interface=com.canonical.applications.DownloadManager
-     member=getAllDownloadsWithMetadata,
+     member=getAllDownloadsWithMetadata
+     peer=(label=unconfined),
 dbus (send)
      bus=session
      path=/
      interface=com.canonical.applications.DownloadManager
-     member=defaultThrottle,
+     member=defaultThrottle
+     peer=(label=unconfined),
 dbus (send)
      bus=session
      path=/
      interface=com.canonical.applications.DownloadManager
-     member=isGSMDownloadAllowed,
+     member=isGSMDownloadAllowed
+     peer=(label=unconfined),
 # Explicitly deny DownloadManager APIs apps shouldn't have access to in order
 # to make sure they aren't accidentally added in the future (see LP: #1277578
 # for details)

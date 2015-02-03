@@ -46,7 +46,8 @@
        bus=session
        path=/org/freedesktop/DBus
        interface=org.freedesktop.DBus
-       member=RequestName,
+       member=RequestName
+       peer=(label=unconfined),
 
   # LP: #1260048 - only allow 'r' for now, since 'w' allow for db poisoning
   owner @{HOME}/.pki/nssdb/ r,

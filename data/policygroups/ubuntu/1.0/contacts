@@ -4,36 +4,41 @@
 # Usage: reserved
 dbus (receive, send)
      bus=session
-     path=/com/canonical/pim/AddressBook,
+     path=/com/canonical/pim/AddressBook
+     peer=(label=unconfined),
 dbus (receive, send)
      bus=session
-     path=/com/canonical/pim/AddressBookView/**,
+     path=/com/canonical/pim/AddressBookView/**
+     peer=(label=unconfined),
 
 # FIXME: LP: #1227818. Clients shouldn't access Telepathy directly. Remove
 #        these when LP: #1227818 is fixed in address-book-app.
 dbus (send)
      bus=session
      path=/org/freedesktop/Telepathy/AccountManager
-     peer=(name=org.freedesktop.Telepathy.AccountManager),
+     peer=(name=org.freedesktop.Telepathy.AccountManager,label=unconfined),
 dbus (receive)
      bus=session
-     path=/org/freedesktop/Telepathy/AccountManager,
+     path=/org/freedesktop/Telepathy/AccountManager
+     peer=(label=unconfined),
 dbus (send)
      bus=session
      path=/org/freedesktop/Telepathy/ChannelDispatcher
-     peer=(name=org.freedesktop.Telepathy.ChannelDispatcher),
+     peer=(name=org.freedesktop.Telepathy.ChannelDispatcher,label=unconfined),
 dbus (receive)
      bus=session
-     path=/org/freedesktop/Telepathy/ChannelDispatcher,
+     path=/org/freedesktop/Telepathy/ChannelDispatcher
+     peer=(label=unconfined),
 dbus (send)
      bus=session
      path=/org/freedesktop/Telepathy/Account/**
      member=Get{,All}
-     peer=(name=org.freedesktop.Telepathy.AccountManager),
+     peer=(name=org.freedesktop.Telepathy.AccountManager,label=unconfined),
 dbus (receive)
      bus=session
      path=/org/freedesktop/Telepathy/Account/**
-     member=Get{,All},
+     member=Get{,All}
+     peer=(label=unconfined),
 
 # LP: #1319546. Apps shouldn't talk directly to sync-monitor, but allow it for
 # now for trusted apps until sync-monitor is integrated with push
@@ -41,4 +46,5 @@ dbus (receive)
 # status until this rule is removed.
 dbus (receive, send)
      bus=session
-     path=/com/canonical/SyncMonitor{,/**},
+     path=/com/canonical/SyncMonitor{,/**}
+     peer=(label=unconfined),

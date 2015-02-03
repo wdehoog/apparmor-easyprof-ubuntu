@@ -4,17 +4,18 @@
 # Usage: reserved
 
 dbus (send)
-    path=/com/canonical/friends/Dispatcher
-    interface=org.freedesktop.DBus.Properties,
+     path=/com/canonical/friends/Dispatcher
+     interface=org.freedesktop.DBus.Properties
+     peer=(label=unconfined),
 dbus (send)
-    path=/com/canonical/friends/Dispatcher
-    peer=(name=com.canonical.Friends.Dispatcher),
+     path=/com/canonical/friends/Dispatcher
+     peer=(name=com.canonical.Friends.Dispatcher,label=unconfined),
 dbus (send)
      bus=session
      path=/org/freedesktop/DBus
      interface=org.freedesktop.DBus
      member=RequestName
-     peer=(name=org.freedesktop.DBus),
+     peer=(name=org.freedesktop.DBus,label=unconfined),
 dbus (bind)
      bus=session
      name=com.canonical.Friends.Streams,
@@ -22,44 +23,51 @@ dbus (send)
      bus=session
      path=/com/canonical/dee/peer/com/canonical/Friends/Streams
      interface=com.canonical.Dee.Peer
-     peer=(name=com.canonical.Friends.Streams),
+     peer=(name=com.canonical.Friends.Streams,label=unconfined),
 dbus (receive)
      bus=session
      path=/com/canonical/dee/peer/com/canonical/Friends/Streams
-     interface=com.canonical.Dee.Peer,
+     interface=com.canonical.Dee.Peer
+     peer=(label=unconfined),
 dbus (send)
      bus=session
      path=/com/canonical/dee/model/com/canonical/Friends/Streams
      interface=com.canonical.Dee.Model
-     peer=(name=com.canonical.Friends.Streams),
+     peer=(name=com.canonical.Friends.Streams,label=unconfined),
 dbus (receive)
      bus=session
      path=/com/canonical/dee/model/com/canonical/Friends/Streams
-     interface=com.canonical.Dee.Model,
+     interface=com.canonical.Dee.Model
+     peer=(label=unconfined),
 
   # Access required for using freedesktop notifications
   # (perhaps move out to templates?)
-  dbus (send)
-       bus=session
-       path=/org/freedesktop/Notifications
-       member=GetServerInformation,
-  dbus (send)
-       bus=session
-       path=/org/freedesktop/Notifications
-       member=Notify,
-  dbus (receive)
-       bus=session
-       member="Notify"
-       peer=(name="org.freedesktop.DBus"),
-  dbus (receive)
-       bus=session
-       path=/org/freedesktop/Notifications
-       member=NotificationClosed,
-  dbus (send)
-       bus=session
-       path=/org/freedesktop/Notifications
-       member=CloseNotification,
-  dbus (receive)
-       bus=session
-       path=/org/freedesktop/Notifications
-       member=dataChanged,
+dbus (send)
+     bus=session
+     path=/org/freedesktop/Notifications
+     member=GetServerInformation
+     peer=(label=unconfined),
+dbus (send)
+     bus=session
+     path=/org/freedesktop/Notifications
+     member=Notify
+     peer=(label=unconfined),
+dbus (receive)
+     bus=session
+     member="Notify"
+     peer=(name="org.freedesktop.DBus",label=unconfined),
+dbus (receive)
+     bus=session
+     path=/org/freedesktop/Notifications
+     member=NotificationClosed
+     peer=(label=unconfined),
+dbus (send)
+     bus=session
+     path=/org/freedesktop/Notifications
+     member=CloseNotification
+     peer=(label=unconfined),
+dbus (receive)
+     bus=session
+     path=/org/freedesktop/Notifications
+     member=dataChanged
+     peer=(label=unconfined),

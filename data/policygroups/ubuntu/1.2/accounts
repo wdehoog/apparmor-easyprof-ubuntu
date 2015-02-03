@@ -5,23 +5,29 @@
 dbus (receive, send)
      bus=session
      path=/com/google/code/AccountsSSO/SingleSignOn
-     interface=com.google.code.AccountsSSO.SingleSignOn.AuthService,
+     interface=com.google.code.AccountsSSO.SingleSignOn.AuthService
+     peer=(label=unconfined),
 dbus (receive, send)
      bus=session
      path=/com/google/code/AccountsSSO/SingleSignOn{,/**}
-     interface=org.freedesktop.DBus.Properties,
+     interface=org.freedesktop.DBus.Properties
+     peer=(label=unconfined),
 dbus (receive, send)
      bus=session
-     interface=com.google.code.AccountsSSO.SingleSignOn.AuthSession,
+     interface=com.google.code.AccountsSSO.SingleSignOn.AuthSession
+     peer=(label=unconfined),
 dbus (receive, send)
      bus=session
-     interface=com.google.code.AccountsSSO.SingleSignOn.Identity,
+     interface=com.google.code.AccountsSSO.SingleSignOn.Identity
+     peer=(label=unconfined),
 dbus (receive, send)
      bus=session
-     interface=com.ubuntu.OnlineAccountsUi,
+     interface=com.ubuntu.OnlineAccountsUi
+     peer=(label=unconfined),
 dbus (receive)
      bus=session
-     interface=com.google.code.AccountsSSO.Accounts,
+     interface=com.google.code.AccountsSSO.Accounts
+     peer=(label=unconfined),
 
 # p2p support uses a named unix socket
 owner /{,var/}run/user/*/signond/socket w,

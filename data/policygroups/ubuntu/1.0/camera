@@ -30,4 +30,5 @@ deny /sys/devices/virtual/dmi/id/* r,
 # opt into it and use the audio policy group. (LP: #1369512)
 dbus (receive, send)
      bus=session
-     path=/core/ubuntu/media/Service{,/**},
+     path=/core/ubuntu/media/Service{,/**}
+     peer=(label="{unconfined,/usr/bin/media-hub-server}"),

@@ -94,6 +94,15 @@
   owner /run/user/[0-9]*/scopes/leaf-net/@{APP_PKGNAME}_@{APP_APPNAME}/   rw,
   owner /run/user/[0-9]*/scopes/leaf-net/@{APP_PKGNAME}_@{APP_APPNAME}/** mrwkl,
 
+  # Allow scopes to read from apps shipped in the same click
+  owner @{HOME}/.local/share/@{APP_PKGNAME}/ r,
+  owner @{HOME}/.local/share/@{APP_PKGNAME}/** mrkl,
+  # Don't allow writes to this directory since we are differently confined than
+  # the app. This is less of a concern for this template since it and the app
+  # templates have limited filesystem access, so this could be carefully
+  # loosened in the future.
+  audit deny @{HOME}/.local/share/@{APP_PKGNAME}/** w,
+
   # Public endpoints
   # all scopes should be able to access the reply endpoints (the scopes-api
   # protects against abuse, see LP: #1347177)

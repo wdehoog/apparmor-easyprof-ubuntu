@@ -5,3 +5,6 @@
 # Usage: reserved
 owner @{HOME}/Videos/   r,
 owner @{HOME}/Videos/** r,
+# SD card: /media/<user>/<label>/...
+owner /media/*/*/[Vv][Ii][Dd][Ee][Oo][Ss]/   r,
+owner /media/*/*/[Vv][Ii][Dd][Ee][Oo][Ss]/** r,

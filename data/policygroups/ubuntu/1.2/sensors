@@ -5,4 +5,5 @@
 dbus (send)
      bus=session
      path=/com/canonical/usensord/*
-     interface=com.canonical.usensord.*,
+     interface=com.canonical.usensord.*
+     peer=(label=unconfined),

@@ -25,27 +25,31 @@ deny /dev/snd/* r,
 # Allow communications with media-hub
 dbus (receive, send)
      bus=session
-     path=/core/ubuntu/media/Service{,/**},
+     path=/core/ubuntu/media/Service{,/**}
+     peer=(label="{unconfined,/usr/bin/media-hub-server}"),
 
 # Allow communications with thumbnailer for retrieving album art
 dbus (send)
      bus=session
      interface="org.freedesktop.DBus.Introspectable"
      path="/com/canonical/Thumbnailer"
-     member="Introspect",
+     member="Introspect"
+     peer=(label=unconfined),
 dbus (send)
      bus=session
      path="/com/canonical/Thumbnailer"
-     member={GetAlbumArt,GetArtistArt},
+     member={GetAlbumArt,GetArtistArt}
+     peer=(label=unconfined),
 
 # Allow communications with mediascanner2
 dbus (send)
      bus=session
      path=/com/canonical/MediaScanner2
-     interface=com.canonical.MediaScanner2,
+     interface=com.canonical.MediaScanner2
+     peer=(label="{unconfined,/usr/bin/mediascanner-service*}"),
 dbus (receive)
      bus=session
-     peer=(label=/usr/bin/mediascanner-service-2.0),
+     peer=(label="{unconfined,/usr/bin/mediascanner-service*}"),
 
 # sound files on the device
 /usr/share/sounds/ r,

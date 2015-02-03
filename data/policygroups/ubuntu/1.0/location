@@ -7,13 +7,15 @@ dbus (send)
      bus=session
      path="/com/ubuntu/location/Service"
      interface="com.ubuntu.location.Service"
-     peer=(name="com.ubuntu.location.Service"),
+     peer=(name="com.ubuntu.location.Service",label=unconfined),
 dbus (receive)
      bus=session
-     path="/com/ubuntu/location/Service",
+     path="/com/ubuntu/location/Service"
+     peer=(label=unconfined),
 dbus (receive, send)
      bus=session
-     interface="com.ubuntu.location.Service.Session",
+     interface="com.ubuntu.location.Service.Session"
+     peer=(label=unconfined),
 
 # system bus
 dbus (send)
@@ -21,15 +23,17 @@ dbus (send)
      path=/org/freedesktop/DBus
      interface=org.freedesktop.DBus
      member=Hello
-     peer=(name=org.freedesktop.DBus),
+     peer=(name=org.freedesktop.DBus,label=unconfined),
 dbus (send)
      bus=system
      path="/com/ubuntu/location/Service"
      interface="com.ubuntu.location.Service"
-     peer=(name="com.ubuntu.location.Service"),
+     peer=(name="com.ubuntu.location.Service",label=unconfined),
 dbus (receive)
      bus=system
-     path="/com/ubuntu/location/Service",
+     path="/com/ubuntu/location/Service"
+     peer=(label=unconfined),
 dbus (receive, send)
      bus=system
-     interface="com.ubuntu.location.Service.Session",
+     interface="com.ubuntu.location.Service.Session"
+     peer=(label=unconfined),

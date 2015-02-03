@@ -4,10 +4,12 @@
 # Usage: reserved
 dbus (receive, send)
      bus=session
-     path=/com/canonical/pim/AddressBook,
+     path=/com/canonical/pim/AddressBook
+     peer=(label=unconfined),
 dbus (receive, send)
      bus=session
-     path=/com/canonical/pim/AddressBookView/**,
+     path=/com/canonical/pim/AddressBookView/**
+     peer=(label=unconfined),
 
 # LP: #1319546. Apps shouldn't talk directly to sync-monitor, but allow it for
 # now for trusted apps until sync-monitor is integrated with push
@@ -15,4 +17,5 @@ dbus (receive, send)
 # status until this rule is removed.
 dbus (receive, send)
      bus=session
-     path=/com/canonical/SyncMonitor{,/**},
+     path=/com/canonical/SyncMonitor{,/**}
+     peer=(label=unconfined),
