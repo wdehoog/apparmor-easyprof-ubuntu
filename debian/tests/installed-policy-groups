@@ -1,6 +1,6 @@
 #!/bin/sh
 # Author: Jamie Strandboge <jamie@ubuntu.com>
-# Copyright (C) 2013 Canonical Ltd.
+# Copyright (C) 2013-2014 Canonical Ltd.
 #
 # This script is distributed under the terms and conditions of the GNU General
 # Public License, Version 3 or later. See http://www.gnu.org/copyleft/gpl.html
@@ -15,13 +15,16 @@ rc="0"
 expected_policy_groups_10="accounts audio calendar camera connectivity contacts content_exchange content_exchange_source friends history location microphone music_files music_files_read networking picture_files picture_files_read sensors usermetrics video video_files video_files_read"
 expected_policy_groups_11="accounts audio calendar camera connectivity contacts content_exchange content_exchange_source debug friends history location microphone music_files music_files_read networking picture_files picture_files_read sensors usermetrics video video_files video_files_read webview"
 expected_policy_groups_12="accounts audio calendar camera connectivity contacts content_exchange content_exchange_source debug history location microphone music_files music_files_read networking picture_files picture_files_read push-notification-client sensors usermetrics video video_files video_files_read webview"
+expected_policy_groups_13="$expected_policy_groups_12" # no new groups over 1.2
 
-for v in 1.0 1.1 1.2 ; do
+for v in 1.0 1.1 1.2 1.3 ; do
     expected_groups="$expected_policy_groups_10"
     if [ "$v" = "1.1" ]; then
         expected_groups="$expected_policy_groups_11"
     elif [ "$v" = "1.2" ]; then
         expected_groups="$expected_policy_groups_12"
+    elif [ "$v" = "1.3" ]; then
+        expected_groups="$expected_policy_groups_13"
     fi
     tmp=`aa-easyprof --list-policy-groups --policy-vendor=ubuntu --policy-version=$v`
     for p in $expected_groups ; do

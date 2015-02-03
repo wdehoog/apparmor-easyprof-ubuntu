@@ -3,8 +3,10 @@ Section: admin
 Priority: optional
 Maintainer: Jamie Strandboge <jamie@ubuntu.com>
 Build-Depends: debhelper (>= 9), python3-minimal, apparmor-easyprof, apparmor
-Standards-Version: 3.9.3
+Standards-Version: 3.9.5
 XS-Testsuite: autopkgtest
+Vcs-Bzr: https://code.launchpad.net/~ubuntu-security/apparmor-easyprof-ubuntu/trunk
+Vcs-Browser: https://code.launchpad.net/~ubuntu-security/apparmor-easyprof-ubuntu/trunk
 
 Package: apparmor-easyprof-ubuntu
 Architecture: all

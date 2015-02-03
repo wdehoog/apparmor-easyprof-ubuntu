@@ -1,4 +1,18 @@
-apparmor-easyprof-ubuntu (1.2.38) UNRELEASED; urgency=medium
+apparmor-easyprof-ubuntu (1.3.0) vivid; urgency=medium
+
+  * debian/control:
+    - add Vcs-Bzr and Vcs-Browser now that we have them
+    - adjust Standards-Version
+  * add debian/make-new-version.sh and document how to use it
+  * create policy version 1.3
+  * adjust autopkgtests:
+    - add tests for policy version 1.3
+    - fix lintian warnings in naming of the tests
+  * debian/apparmor-easyprof-ubuntu.postinst: add #DEBHELPER# token
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 29 Oct 2014 07:52:45 -0500
+
+apparmor-easyprof-ubuntu (1.2.38) utopic; urgency=medium
 
   * ubuntu/networking: add rules for app-specific ubuntu-download-manager
     file downloads (LP: #1384349)
