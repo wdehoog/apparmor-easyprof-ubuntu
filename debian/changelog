@@ -1,3 +1,13 @@
+apparmor-easyprof-ubuntu (1.3.2) vivid; urgency=medium
+
+  [ Ricardo Salveti de Araujo ]
+  * Adding hardware/video.d/apparmor-easyprof-ubuntu_manta to allow rw on
+    /dev/video*, needed for hardware video decoding (LP: #1408130). (Note: we
+    may need to add rw on /dev/v4l-subdev*, but this seems to be enough for
+    now)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Thu, 08 Jan 2015 11:41:57 -0600
+
 apparmor-easyprof-ubuntu (1.3.1) vivid; urgency=medium
 
   * ubuntu/ubuntu-sdk:
