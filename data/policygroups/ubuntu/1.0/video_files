@@ -8,3 +8,7 @@ owner @{HOME}/Videos/** rwk,
 # SD card: /media/<user>/<label>/...
 owner /media/*/*/[Vv][Ii][Dd][Ee][Oo][Ss]/   r,
 owner /media/*/*/[Vv][Ii][Dd][Ee][Oo][Ss]/** rwk,
+# LP: #1408772. Temporarily allow read to user directory in SD card to obtain
+# the label of the SD card (don't use owner because this directory is owned by
+# root).
+/media/*/ r,
