@@ -10,7 +10,7 @@ Vcs-Browser: https://code.launchpad.net/~ubuntu-security/apparmor-easyprof-ubunt
 
 Package: apparmor-easyprof-ubuntu
 Architecture: all
-Depends: ${misc:Depends}, apparmor (>= 2.8.98-0ubuntu2~)
+Depends: ${misc:Depends}, apparmor (>= 2.9.1-0ubuntu4~)
 Description: AppArmor easyprof templates for Ubuntu
  Provides AppArmor easyprof templates and policygroups suitable for use with
  the Ubuntu app ecosystem.
