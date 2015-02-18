@@ -25,6 +25,9 @@
   # this. (LP: #1350152)
   #include <abstractions/openssl>
 
+  # Mir-specific stuff
+  #include <abstractions/mir>
+
   # Needed by native GL applications on Mir
   owner /{,var/}run/user/*/mir_socket rw,
   owner /tmp/mir_socket rw, # FIXME: LP: #1236912
