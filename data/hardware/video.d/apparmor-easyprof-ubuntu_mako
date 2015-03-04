@@ -1,3 +1,9 @@
   # Nexus 4 (mako)
   /dev/msm_vidc_dec* rw,
   /dev/msm_vidc_enc* rw,
+
+  # video4linux 1 and 2
+  /dev/video* rw,
+
+  # videl4linux 2
+  /dev/v4l-subdev[0-9]* rw,

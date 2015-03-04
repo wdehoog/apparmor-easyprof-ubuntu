@@ -1,3 +1,11 @@
+apparmor-easyprof-ubuntu (1.3.8) vivid; urgency=medium
+
+  * hardware/video.d/apparmor-easyprof-ubuntu_mako: add accesses for
+    video4linux 1 and 2 devices needed by mediascanner2 (gst-plugin-scanner)
+    et al
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 04 Mar 2015 08:42:23 -0600
+
 apparmor-easyprof-ubuntu (1.3.7) vivid; urgency=medium
 
   * ubuntu/webview: allow oxide_helper read access to /sys/devices/system/cpu/
