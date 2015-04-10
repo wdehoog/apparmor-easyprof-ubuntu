@@ -40,6 +40,10 @@
   audit deny /dev/input/** rw,
   deny /dev/fb0 rw, # don't use 'audit' since it is too noisy with the camera
 
+  # LP: #1433590
+  deny dbus bus=system
+            path="/org/freedesktop/Accounts",
+
   # Scopes shouldn't use URL dispatcher directly
   audit deny dbus (send)
        bus=session

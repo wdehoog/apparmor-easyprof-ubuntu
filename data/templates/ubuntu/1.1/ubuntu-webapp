@@ -203,6 +203,10 @@
   deny dbus (send)
        bus=session
        interface="org.gnome.GConf.Server",
+
+  # LP: #1433590
+  deny dbus bus=system
+            path="/org/freedesktop/Accounts",
   # LP: #1342129
   deny dbus (bind)
             name="org.freedesktop.Application",

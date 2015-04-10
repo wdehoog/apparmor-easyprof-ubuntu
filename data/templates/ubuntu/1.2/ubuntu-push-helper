@@ -33,6 +33,10 @@
        bus=session
        interface="org.gnome.GConf.Server",
 
+  # LP: #1433590
+  deny dbus bus=system
+            path="/org/freedesktop/Accounts",
+
   # Push helpers shouldn't have access to the clipboard (LP: #1371170)
   audit deny dbus (receive, send)
        bus=session
