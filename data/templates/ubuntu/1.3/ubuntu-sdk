@@ -219,6 +219,7 @@
   # Explicitly deny dangerous access
   audit deny /dev/input/** rw,
   deny /dev/fb0 rw, # don't use 'audit' since it is too noisy with the camera
+  deny /dev/tty rw,
 
   # LP: #1378115
   deny /run/user/[0-9]*/dconf/user rw,

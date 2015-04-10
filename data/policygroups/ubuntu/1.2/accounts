@@ -30,7 +30,7 @@ dbus (receive)
      peer=(label=unconfined),
 
 # p2p support uses a named unix socket, available only to unconfined apps.
-deny /{,var/}run/user/*/signond/socket w,
+deny /{,var/}run/user/*/signond/socket rw,
 
 # read access to accounts.db is ok
 owner @{HOME}/.config/libaccounts-glib/accounts.db* rk,

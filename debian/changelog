@@ -1,3 +1,11 @@
+apparmor-easyprof-ubuntu (1.3.9) vivid; urgency=medium
+
+  * templates/ubuntu-sdk|ubuntu-webapp: explicitly deny noisy /dev/tty access
+  * policygroups/accounts: also deny 'r' to /{,var/}run/user/*/signond/socket
+    to silence expected noisy denial (LP: #1415492)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Mon, 30 Mar 2015 08:42:47 -0500
+
 apparmor-easyprof-ubuntu (1.3.8) vivid; urgency=medium
 
   * hardware/video.d/apparmor-easyprof-ubuntu_mako: add accesses for
