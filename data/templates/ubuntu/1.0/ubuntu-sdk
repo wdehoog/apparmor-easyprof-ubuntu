@@ -332,6 +332,19 @@
   deny @{HOME}/.cache/tncache-write-text.null w, # silence access test
   # FIXME: this leaks running process. AppArmor kernel var could solve this
   owner @{PROC}/[0-9]*/attr/current r,
+  # Allow communications with thumbnailer for thumbnailing local files
+  dbus (send)
+       bus=session
+       interface="org.freedesktop.DBus.Introspectable"
+       path="/com/canonical/Thumbnailer"
+       member="Introspect"
+       peer=(label=unconfined),
+  dbus (send)
+       bus=session
+       path="/com/canonical/Thumbnailer"
+       interface="com.canonical.Thumbnailer"
+       member="GetThumbnail"
+       peer=(label=unconfined),
 
   #
   # apps may always use vibrations
