@@ -1,11 +1,14 @@
 In Ubuntu, we will use MAJOR.MINOR for the policy version, ignoring MICRO.
 Therefore, this package uses a version number of 1.0.0 for the initial release
 and ships policy in ubuntu/1.0. The 1.0.1 release will make changes to
-ubuntu/1.0 while 1.1.0 will start shipping policy for ubuntu/1.1.
+ubuntu/1.0 while 1.1.0 will start shipping policy for ubuntu/1.1. Starting with
+Ubuntu 15.10, the MAJOR.MINOR will correspond to the Ubuntu release the policy
+for which it is intended. For example, the new release version that includes
+policy for Ubuntu 15.10 will be 15.10.1.
 
 When creating a new major/minor version, use debian/make-new-version.sh. Eg,
-to create the 1.3 policy based on 1.2. do:
-$ sh ./debian/make-new-version.sh 1.2 1.3
+to create the 16.04 policy based on 15.10. do:
+$ sh ./debian/make-new-version.sh 15.10 16.04
 
 This will create the necessary directories then symlink all entries (except
 'default' template) from the previous version to this one. It will then create
@@ -13,49 +16,47 @@ the 'default' symlink and have it point to 'ubuntu-sdk'. As the policy develops
 these symlinks may be removed with differing policy, new files added, etc.
 
 Eg:
-$ sh ./debian/make-new-version.sh 1.2 1.3
+$ sh ./debian/make-new-version.sh 15.10 16.04
 $ for i in policygroups templates ; do
     echo "= $i ="
-    ls -l data/$i/ubuntu/1.3
+    ls -l data/$i/ubuntu/16.04
 done
 = policygroups =
 total 0
-lrwxrwxrwx 1 jamie jamie 15 Oct 29 08:27 accounts -> ../1.2/accounts
-lrwxrwxrwx 1 jamie jamie 12 Oct 29 08:27 audio -> ../1.2/audio
-lrwxrwxrwx 1 jamie jamie 15 Oct 29 08:27 calendar -> ../1.2/calendar
-lrwxrwxrwx 1 jamie jamie 13 Oct 29 08:27 camera -> ../1.2/camera
-lrwxrwxrwx 1 jamie jamie 19 Oct 29 08:27 connectivity -> ../1.2/connectivity
-lrwxrwxrwx 1 jamie jamie 15 Oct 29 08:27 contacts -> ../1.2/contacts
-lrwxrwxrwx 1 jamie jamie 23 Oct 29 08:27 content_exchange -> ../1.2/content_exchange
-lrwxrwxrwx 1 jamie jamie 30 Oct 29 08:27 content_exchange_source -> ../1.2/content_exchange_source
-lrwxrwxrwx 1 jamie jamie 12 Oct 29 08:27 debug -> ../1.2/debug
-lrwxrwxrwx 1 jamie jamie 14 Oct 29 08:27 history -> ../1.2/history
-lrwxrwxrwx 1 jamie jamie 15 Oct 29 08:27 location -> ../1.2/location
-lrwxrwxrwx 1 jamie jamie 17 Oct 29 08:27 microphone -> ../1.2/microphone
-lrwxrwxrwx 1 jamie jamie 18 Oct 29 08:27 music_files -> ../1.2/music_files
-lrwxrwxrwx 1 jamie jamie 23 Oct 29 08:27 music_files_read -> ../1.2/music_files_read
-lrwxrwxrwx 1 jamie jamie 17 Oct 29 08:27 networking -> ../1.2/networking
-lrwxrwxrwx 1 jamie jamie 20 Oct 29 08:27 picture_files -> ../1.2/picture_files
-lrwxrwxrwx 1 jamie jamie 25 Oct 29 08:27 picture_files_read -> ../1.2/picture_files_read
-lrwxrwxrwx 1 jamie jamie 31 Oct 29 08:27 push-notification-client -> ../1.2/push-notification-client
-lrwxrwxrwx 1 jamie jamie 14 Oct 29 08:27 sensors -> ../1.2/sensors
-lrwxrwxrwx 1 jamie jamie 18 Oct 29 08:27 usermetrics -> ../1.2/usermetrics
-lrwxrwxrwx 1 jamie jamie 12 Oct 29 08:27 video -> ../1.2/video
-lrwxrwxrwx 1 jamie jamie 18 Oct 29 08:27 video_files -> ../1.2/video_files
-lrwxrwxrwx 1 jamie jamie 23 Oct 29 08:27 video_files_read -> ../1.2/video_files_read
-lrwxrwxrwx 1 jamie jamie 14 Oct 29 08:27 webview -> ../1.2/webview
+lrwxrwxrwx 1 jamie jamie 15 Oct 29 08:27 accounts -> ../15.10/accounts
+lrwxrwxrwx 1 jamie jamie 12 Oct 29 08:27 audio -> ../15.10/audio
+lrwxrwxrwx 1 jamie jamie 15 Oct 29 08:27 calendar -> ../15.10/calendar
+lrwxrwxrwx 1 jamie jamie 13 Oct 29 08:27 camera -> ../15.10/camera
+lrwxrwxrwx 1 jamie jamie 19 Oct 29 08:27 connectivity -> ../15.10/connectivity
+lrwxrwxrwx 1 jamie jamie 15 Oct 29 08:27 contacts -> ../15.10/contacts
+lrwxrwxrwx 1 jamie jamie 23 Oct 29 08:27 content_exchange -> ../15.10/content_exchange
+lrwxrwxrwx 1 jamie jamie 30 Oct 29 08:27 content_exchange_source -> ../15.10/content_exchange_source
+lrwxrwxrwx 1 jamie jamie 12 Oct 29 08:27 debug -> ../15.10/debug
+lrwxrwxrwx 1 jamie jamie 14 Oct 29 08:27 history -> ../15.10/history
+lrwxrwxrwx 1 jamie jamie 15 Oct 29 08:27 location -> ../15.10/location
+lrwxrwxrwx 1 jamie jamie 17 Oct 29 08:27 microphone -> ../15.10/microphone
+lrwxrwxrwx 1 jamie jamie 18 Oct 29 08:27 music_files -> ../15.10/music_files
+lrwxrwxrwx 1 jamie jamie 23 Oct 29 08:27 music_files_read -> ../15.10/music_files_read
+lrwxrwxrwx 1 jamie jamie 17 Oct 29 08:27 networking -> ../15.10/networking
+lrwxrwxrwx 1 jamie jamie 20 Oct 29 08:27 picture_files -> ../15.10/picture_files
+lrwxrwxrwx 1 jamie jamie 25 Oct 29 08:27 picture_files_read -> ../15.10/picture_files_read
+lrwxrwxrwx 1 jamie jamie 31 Oct 29 08:27 push-notification-client -> ../15.10/push-notification-client
+lrwxrwxrwx 1 jamie jamie 14 Oct 29 08:27 sensors -> ../15.10/sensors
+lrwxrwxrwx 1 jamie jamie 18 Oct 29 08:27 usermetrics -> ../15.10/usermetrics
+lrwxrwxrwx 1 jamie jamie 12 Oct 29 08:27 video -> ../15.10/video
+lrwxrwxrwx 1 jamie jamie 18 Oct 29 08:27 video_files -> ../15.10/video_files
+lrwxrwxrwx 1 jamie jamie 23 Oct 29 08:27 video_files_read -> ../15.10/video_files_read
+lrwxrwxrwx 1 jamie jamie 14 Oct 29 08:27 webview -> ../15.10/webview
 = templates =
 total 0
 lrwxrwxrwx 1 jamie jamie 10 Oct 29 08:27 default -> ubuntu-sdk
-lrwxrwxrwx 1 jamie jamie 25 Oct 29 08:27 ubuntu-push-helper -> ../1.2/ubuntu-push-helper
-lrwxrwxrwx 1 jamie jamie 27 Oct 29 08:27 ubuntu-scope-network -> ../1.2/ubuntu-scope-network
-lrwxrwxrwx 1 jamie jamie 17 Oct 29 08:27 ubuntu-sdk -> ../1.2/ubuntu-sdk
-lrwxrwxrwx 1 jamie jamie 20 Oct 29 08:27 ubuntu-webapp -> ../1.2/ubuntu-webapp
-lrwxrwxrwx 1 jamie jamie 17 Oct 29 08:27 unconfined -> ../1.2/unconfined
+lrwxrwxrwx 1 jamie jamie 25 Oct 29 08:27 ubuntu-push-helper -> ../15.10/ubuntu-push-helper
+lrwxrwxrwx 1 jamie jamie 27 Oct 29 08:27 ubuntu-scope-network -> ../15.10/ubuntu-scope-network
+lrwxrwxrwx 1 jamie jamie 17 Oct 29 08:27 ubuntu-sdk -> ../15.10/ubuntu-sdk
+lrwxrwxrwx 1 jamie jamie 20 Oct 29 08:27 ubuntu-webapp -> ../15.10/ubuntu-webapp
+lrwxrwxrwx 1 jamie jamie 17 Oct 29 08:27 unconfined -> ../15.10/unconfined
 
 
 When adding templates and policy groups, you should also adjust the
 debian/tests/installed_* autopkgtest scripts. This should also be done when
 adding new policy groups and templates.
-
-

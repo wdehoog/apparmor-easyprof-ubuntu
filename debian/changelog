@@ -1,3 +1,16 @@
+apparmor-easyprof-ubuntu (15.10.1) UNRELEASED; urgency=medium
+
+  [ James Henstridge ]
+  * ubuntu/ubuntu-sdk: add rules to allow access to the new GetThumbnail
+    method
+
+  [ Jamie Strandboge ]
+  * create policy version 15.10 for wily
+  * adjust autopkgtests for policy version 15.10
+  * README.source: update for new version numbers that track releases
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Thu, 21 May 2015 08:52:19 -0500
+
 apparmor-easyprof-ubuntu (1.3.10) vivid; urgency=medium
 
   * templates/*: explicitly deny noisy access to accountsservice
