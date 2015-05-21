@@ -18,8 +18,9 @@ expected_templates_11="$expected_templates_10" # no new templates over 1.0
 #expected_templates_12="default ubuntu-scope-network ubuntu-scope-local-content ubuntu-sdk ubuntu-webapp unconfined"
 expected_templates_12="default ubuntu-account-plugin ubuntu-push-helper ubuntu-scope-network ubuntu-sdk ubuntu-webapp unconfined"
 expected_templates_13="$expected_templates_12" # no new templates over 1.2
+expected_templates_1510="$expected_templates_13" # no new templates over 1.3
 
-for v in 1.0 1.1 1.2 1.3 ; do
+for v in 1.0 1.1 1.2 1.3 15.10 ; do
     expected_templates="$expected_templates_10"
     if [ "$v" = "1.1" ]; then
         expected_templates="$expected_templates_11"
@@ -27,6 +28,8 @@ for v in 1.0 1.1 1.2 1.3 ; do
         expected_templates="$expected_templates_12"
     elif [ "$v" = "1.3" ]; then
         expected_templates="$expected_templates_13"
+    elif [ "$v" = "15.10" ]; then
+        expected_templates="$expected_templates_1510"
     fi
     tmp=`aa-easyprof --list-templates --policy-vendor=ubuntu --policy-version=$v`
     for p in $expected_templates ; do
