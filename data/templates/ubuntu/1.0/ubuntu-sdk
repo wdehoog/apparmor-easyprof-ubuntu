@@ -188,6 +188,15 @@
        member="Open"
        peer=(label=unconfined),
 
+  # Untrusted Helpers needed to use Trusted Prompt Sessions getting the
+  # Mir socket from their trusted helper (who is setting up the TPS)
+  dbus (receive, send)
+       path=/com/canonical/UbuntuAppLaunch/@{APP_ID_DBUS}/*
+       interface="org.canonical.UbuntuAppLaunch.SocketDemangler"
+       member="GetMirSocket"
+       bus=session
+       peer=(label=unconfined),
+
   # TODO: finetune this
   dbus (send)
        bus=session
