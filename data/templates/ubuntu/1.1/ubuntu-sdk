@@ -183,6 +183,22 @@
        path=/com/canonical/unity/launcher/@{APP_ID_DBUS}
        peer=(label=unconfined),
 
+  # Untrusted Helpers are 3rd party apps that run in a different confinement
+  # context and are in a separate Mir session from the calling app (eg, an
+  # app that uses a content provider from another app). These helpers use
+  # Trusted Prompt Sessions to overlay their window over the calling app and
+  # need to get the Mir socket that was setup by the associated trusted helper
+  # (eg, content-hub). Typical consumers are content-hub providers,
+  # pay-service, url-dispatcher and possibly online-accounts.
+  # LP: #1462492 - this rule is suboptimal and should not be needed once we
+  # move to socket activation or FD passing
+  dbus (receive, send)
+       path=/com/canonical/UbuntuAppLaunch/@{APP_ID_DBUS}/*
+       interface="org.canonical.UbuntuAppLaunch.SocketDemangler"
+       member="GetMirSocket"
+       bus=session
+       peer=(label=unconfined),
+
   # TODO: finetune this
   dbus (send)
        bus=session
