@@ -1,4 +1,4 @@
-apparmor-easyprof-ubuntu (15.10.2) UNRELEASED; urgency=medium
+apparmor-easyprof-ubuntu (15.10.2) wily; urgency=medium
 
   [ Ted Gould ]
   * ubuntu/ubuntu-sdk: DBus rule for UAL TPS untrusted helpers (LP: #1462494)
