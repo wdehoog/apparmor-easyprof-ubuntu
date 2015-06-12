@@ -1,3 +1,13 @@
+apparmor-easyprof-ubuntu (15.10.3) wily; urgency=medium
+
+  * ubuntu/unconfined: remove autopilot specific rules and use simpler
+    '/** pix,' rule. This is possible because dbus-property-service no longer
+    ships 'fakeenv' rules. This is only backportable on earlier releases if
+    dbus-property-service in those releases has the same change.
+    (LP: #1464341)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 12 Jun 2015 09:59:18 -0500
+
 apparmor-easyprof-ubuntu (15.10.2) wily; urgency=medium
 
   [ Ted Gould ]

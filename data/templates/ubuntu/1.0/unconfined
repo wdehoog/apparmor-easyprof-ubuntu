@@ -22,14 +22,7 @@
   network,
   / rwkl,
   /** rwlkm,
-
-  # autopilot runs things in out of ~/autopilot/fakeenv, so lets allow running
-  # things pretty much everywhere but avoid exec conflicts with the autopilot
-  # include file which has this rule:
-  # owner @{HOMEDIRS}/autopilot/fakeenv/*/.local/share/@{APP_PKGNAME}/** mrwklix,
-  /[^h]** pix,
-  /[^h][^o][^m][^e]** pix,
-  @{HOMEDIRS}/*/autopilot/[^f][^a][^k][^e]*/** pix,
+  /** pix,
 
   mount,
   remount,
