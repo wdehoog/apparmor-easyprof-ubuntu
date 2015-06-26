@@ -1,3 +1,13 @@
+apparmor-easyprof-ubuntu (15.10.5) UNRELEASED; urgency=medium
+
+  * ubuntu/ubuntu-account-plugin (LP: #1468792):
+    - allow access to QML cache
+    - explicitly deny access to /proc/[0-9]*/mounts and /dev/disk/by-label/
+  * hardware/graphics.d/apparmor-easyprof-ubuntu_(hammerhead|mako|flo):
+    also allow access to kgsl-3d0.0/kgsl/kgsl-3d0/reset_count
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 26 Jun 2015 10:47:37 -0500
+
 apparmor-easyprof-ubuntu (15.10.4) wily; urgency=medium
 
   [ Ken VanDine ]

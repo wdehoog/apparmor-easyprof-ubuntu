@@ -105,6 +105,8 @@
   # Explicitly deny dangerous access
   audit deny /dev/input/** rw,
   deny /dev/fb0 rw, # don't use 'audit' since it is too noisy with the camera
+  deny @{PROC}/[0-9]*/mounts r,
+  deny /dev/disk/by-label/ r,
 
   # LP: #1378115
   deny /run/user/[0-9]*/dconf/user rw,
@@ -238,6 +240,11 @@
   owner /{,var/}run/user/*/online-accounts-ui/ui-*-@{APP_PKGNAME}_@{APP_APPNAME} rw,
   owner @{HOME}/.cache/online-accounts-ui/id-*-@{APP_PKGNAME}_@{APP_APPNAME}/ rw,
   owner @{HOME}/.cache/online-accounts-ui/id-*-@{APP_PKGNAME}_@{APP_APPNAME}/** mrwkl,
+
+  # Allow writes to application-specific QML cache directories
+  owner @{HOME}/.cache/QML/Apps/@{APP_PKGNAME}_@{APP_APPNAME}_@{APP_VERSION}/   rw,
+  owner @{HOME}/.cache/QML/Apps/@{APP_PKGNAME}_@{APP_APPNAME}_@{APP_VERSION}/** mrwkl,
+
   dbus (send)
        bus=session
        path="/com/google/code/AccountsSSO/Accounts/Manager"
