@@ -1,4 +1,4 @@
-apparmor-easyprof-ubuntu (15.10.5) UNRELEASED; urgency=medium
+apparmor-easyprof-ubuntu (15.10.5) wily; urgency=medium
 
   * ubuntu/ubuntu-account-plugin (LP: #1468792):
     - allow access to QML cache
