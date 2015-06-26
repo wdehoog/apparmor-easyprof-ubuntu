@@ -199,10 +199,12 @@
   # move to socket activation or FD passing
   dbus (receive, send)
        path=/com/canonical/UbuntuAppLaunch/@{APP_ID_DBUS}/*
-       interface="org.canonical.UbuntuAppLaunch.SocketDemangler"
+       interface="com.canonical.UbuntuAppLaunch.SocketDemangler"
        member="GetMirSocket"
        bus=session
        peer=(label=unconfined),
+  # Allow access to the socket-demangler (needed for the above)
+  /usr/lib/@{multiarch}/ubuntu-app-launch/socket-demangler rmix,
 
   # TODO: finetune this
   dbus (send)

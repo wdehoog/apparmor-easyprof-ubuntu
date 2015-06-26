@@ -1,3 +1,11 @@
+apparmor-easyprof-ubuntu (15.10.4) wily; urgency=medium
+
+  [ Ken VanDine ]
+  * Fixed the interface name for the SocketDemangler rule in the ubuntu-sdk
+    template and added rule to allow the socket-demangler to be executed.
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 19 Jun 2015 08:09:46 -0500
+
 apparmor-easyprof-ubuntu (15.10.3) wily; urgency=medium
 
   * ubuntu/unconfined: remove autopilot specific rules and use simpler
