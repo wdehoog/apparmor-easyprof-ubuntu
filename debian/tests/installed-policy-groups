@@ -12,9 +12,9 @@ set -e
 
 rc="0"
 
-expected_policy_groups_10="accounts audio calendar camera connectivity contacts content_exchange content_exchange_source friends history location microphone music_files music_files_read networking picture_files picture_files_read sensors usermetrics video video_files video_files_read"
-expected_policy_groups_11="accounts audio calendar camera connectivity contacts content_exchange content_exchange_source debug friends history location microphone music_files music_files_read networking picture_files picture_files_read sensors usermetrics video video_files video_files_read webview"
-expected_policy_groups_12="accounts audio calendar camera connectivity contacts content_exchange content_exchange_source debug history location microphone music_files music_files_read networking picture_files picture_files_read push-notification-client sensors usermetrics video video_files video_files_read webview"
+expected_policy_groups_10="accounts audio calendar camera connectivity contacts content_exchange content_exchange_source friends history keep-display-on location microphone music_files music_files_read networking picture_files picture_files_read sensors usermetrics video video_files video_files_read"
+expected_policy_groups_11="accounts audio calendar camera connectivity contacts content_exchange content_exchange_source debug friends history keep-display-on location microphone music_files music_files_read networking picture_files picture_files_read sensors usermetrics video video_files video_files_read webview"
+expected_policy_groups_12="accounts audio calendar camera connectivity contacts content_exchange content_exchange_source debug history keep-display-on location microphone music_files music_files_read networking picture_files picture_files_read push-notification-client sensors usermetrics video video_files video_files_read webview"
 expected_policy_groups_13="$expected_policy_groups_12" # no new groups over 1.2
 expected_policy_groups_1510="$expected_policy_groups_13" # no new groups over 1.3
 
