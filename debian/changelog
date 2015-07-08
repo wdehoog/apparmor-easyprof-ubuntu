@@ -1,9 +1,10 @@
-apparmor-easyprof-ubuntu (15.10.6) UNRELEASED; urgency=medium
+apparmor-easyprof-ubuntu (15.10.6) wily; urgency=medium
 
   * add ubuntu/keep-display-on for using the Unity screen DBus API
     - LP: #1462489
+  * adjust autopkgtests for keep-display-on
 
- -- Jamie Strandboge <jamie@ubuntu.com>  Tue, 07 Jul 2015 15:50:08 -0500
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 08 Jul 2015 09:11:56 -0500
 
 apparmor-easyprof-ubuntu (15.10.5) wily; urgency=medium
 
