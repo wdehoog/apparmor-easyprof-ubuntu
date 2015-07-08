@@ -1,0 +1,16 @@
+# Description: Can request keeping the screen on
+# Usage: common
+
+# Allow communications with Unity screen API
+dbus (send)
+     bus=system
+     interface="org.freedesktop.DBus.Introspectable"
+     path="/com/canonical/Unity/Screen"
+     member="Introspect"
+     peer=(label=unconfined),
+dbus (send)
+     bus=system
+     interface="com.canonical.Unity.Screen"
+     path="/com/canonical/Unity/Screen"
+     member={keepDisplayOn,removeDisplayOnRequest}
+     peer=(label=unconfined),
