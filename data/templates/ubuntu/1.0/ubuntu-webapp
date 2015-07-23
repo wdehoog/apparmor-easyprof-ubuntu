@@ -391,6 +391,11 @@
   # only use ubuntu-sdk-13.10
   /usr/bin/webapp-container rmix,
 
+  /usr/share/ubuntu-html5-theme/        r,
+  /usr/share/ubuntu-html5-theme/**      r,
+  /usr/share/ubuntu-html5-ui-toolkit/   r,
+  /usr/share/ubuntu-html5-ui-toolkit/** r,
+
   #
   # Application install dirs
   #
