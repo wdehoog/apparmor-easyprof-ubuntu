@@ -1,11 +1,11 @@
-apparmor-easyprof-ubuntu (15.10.8) UNRELEASED; urgency=medium
+apparmor-easyprof-ubuntu (15.10.8) wily; urgency=medium
 
   [ Alberto Mardegan ]
   * ubuntu/15.10/accounts: use only the new Online Accounts v2 API
   * ubuntu/1.[23]/accounts: add the new Online Accounts v2 API
   * ubuntu/15.10/ubuntu-account-plugin: add the required v1 API
 
- -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 29 Jul 2015 15:10:13 -0500
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 29 Jul 2015 15:16:07 -0500
 
 apparmor-easyprof-ubuntu (15.10.7) wily; urgency=medium
 
