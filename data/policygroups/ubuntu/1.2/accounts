@@ -52,3 +52,9 @@ owner @{HOME}/.local/share/accounts/** r,
 #                 bus=session
 #                 interface=com.nokia.singlesignonui
 #                 member=cookiesForIdentity,
+
+# Online Accounts v2 API
+dbus (receive, send)
+     bus=session
+     interface=com.ubuntu.OnlineAccounts.Manager
+     peer=(label=unconfined),
