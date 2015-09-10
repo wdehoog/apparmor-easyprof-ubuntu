@@ -1,7 +1,1 @@
-# Description: Can use Online Accounts.
-# Usage: common
-# Online Accounts v2 API
-dbus (receive, send)
-     bus=session
-     interface=com.ubuntu.OnlineAccounts.Manager
-     peer=(label=unconfined),
+../1.3/accounts

@@ -1,3 +1,10 @@
+apparmor-easyprof-ubuntu (15.10.9) wily; urgency=medium
+
+  [ Alberto Mardegan ]
+  * ubuntu/15.10/accounts: add back v1 API
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Thu, 10 Sep 2015 10:38:22 -0500
+
 apparmor-easyprof-ubuntu (15.10.8) wily; urgency=medium
 
   [ Alberto Mardegan ]
