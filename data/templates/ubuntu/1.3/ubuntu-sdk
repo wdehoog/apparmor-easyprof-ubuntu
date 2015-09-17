@@ -201,6 +201,12 @@
   # Allow access to the socket-demangler (needed for the above)
   /usr/lib/@{multiarch}/ubuntu-app-launch/socket-demangler rmix,
 
+  # Allow in-app purchases via package-specific subtree paths
+  dbus (send)
+       bus=session
+       path=/com/canonical/pay/store/@{APP_PKGNAME_DBUS}
+       interface="com.canonical.pay.store"
+
   # TODO: finetune this
   dbus (send)
        bus=session
