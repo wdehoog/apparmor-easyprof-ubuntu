@@ -1,3 +1,9 @@
+apparmor-easyprof-ubuntu (15.10.11) wily; urgency=medium
+
+  * adjust autopkgtests for in-app-purchases
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Mon, 21 Sep 2015 17:02:52 -0500
+
 apparmor-easyprof-ubuntu (15.10.10) wily; urgency=medium
 
   [ Rodney Dawes ]
