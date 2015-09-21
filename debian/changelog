@@ -1,3 +1,10 @@
+apparmor-easyprof-ubuntu (15.10.10) UNRELEASED; urgency=medium
+
+  [ Rodney Dawes ]
+  * Add in-app-purchases policy group for IAP support (LP: #1498202)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Mon, 21 Sep 2015 16:45:20 -0500
+
 apparmor-easyprof-ubuntu (15.10.9) wily; urgency=medium
 
   [ Alberto Mardegan ]

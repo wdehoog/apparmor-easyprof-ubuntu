@@ -1,0 +1,7 @@
+# Description: Can access pay service
+# Usage: common
+
+dbus (send)
+     bus=session
+     path=/com/canonical/pay/store/@{APP_PKGNAME_DBUS}
+     interface="com.canonical.pay.store",
