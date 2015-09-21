@@ -1,0 +1,6 @@
+# Allow in-app purchases via package-specific subtree paths
+
+dbus (send)
+     bus=session
+     path=/com/canonical/pay/store/@{APP_PKGNAME_DBUS}
+     interface="com.canonical.pay.store"
