@@ -1,8 +1,11 @@
-apparmor-easyprof-ubuntu (15.10.12) UNRELEASED; urgency=medium
+apparmor-easyprof-ubuntu (16.04.1) xenial; urgency=medium
 
-  * 
+  * create policy version 16.04 for xenial
+  * adjust autopkgtests for policy version 15.10
+  * ubuntu/ubuntu-sdk, ubuntu/webview: allow /dev/shm in addition to /run/shm
+    (LP: #1508054)
 
- -- Jamie Strandboge <jamie@ubuntu.com>  Tue, 06 Oct 2015 08:23:03 -0500
+ -- Jamie Strandboge <jamie@ubuntu.com>  Mon, 26 Oct 2015 15:52:48 -0500
 
 apparmor-easyprof-ubuntu (15.10.11) wily; urgency=medium
 
