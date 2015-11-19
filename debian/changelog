@@ -1,3 +1,11 @@
+apparmor-easyprof-ubuntu (16.04.2) xenial; urgency=medium
+
+  * ubuntu/ubuntu-sdk:
+    - apply shm changes in last upload to previous policy and adjust symlinks
+    - allow read access to /usr/share/click/frameworks
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Thu, 19 Nov 2015 15:00:52 -0600
+
 apparmor-easyprof-ubuntu (16.04.1) xenial; urgency=medium
 
   * create policy version 16.04 for xenial

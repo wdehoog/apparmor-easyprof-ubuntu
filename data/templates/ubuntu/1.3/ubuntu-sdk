@@ -396,6 +396,10 @@
 
   /usr/lib/@{multiarch}/gstreamer*/gstreamer*/gst-plugin-scanner rix,
 
+  # click frameworks
+  /usr/share/click/frameworks/  r,
+  /usr/share/click/frameworks/* r,
+
   # GStreamer binary registry - hybris pulls this in for everything now, not
   # just audio
   owner @{HOME}/.gstreamer*/registry.*.bin*       r,
@@ -443,10 +447,10 @@
 
   # FIXME: LP: #1197060, LP: #1377648 (don't remove until qtwebkit is off the
   #        image)
-  owner /{,run/}shm/WK2SharedMemory.[0-9]* rwk,
+  owner /{dev,run}/shm/WK2SharedMemory.[0-9]* rwk,
 
   # FIXME: LP: #1370218
-  owner /{run,dev}/shm/shmfd-* rwk,
+  owner /{dev,run}/shm/shmfd-* rwk,
 
   # Allow writes to various (application-specific) XDG directories
   owner @{HOME}/.cache/@{APP_PKGNAME}/                  rw,      # subdir of XDG_CACHE_HOME
