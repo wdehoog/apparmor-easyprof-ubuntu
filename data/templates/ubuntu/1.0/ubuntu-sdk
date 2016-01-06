@@ -361,7 +361,7 @@
        bus=session
        path="/com/canonical/Thumbnailer"
        interface="com.canonical.Thumbnailer"
-       member="GetThumbnail"
+       member={GetThumbnail,TraceClient,MaxBacklog}
        peer=(label=unconfined),
 
   #
