@@ -1,3 +1,11 @@
+apparmor-easyprof-ubuntu (16.04.3) UNRELEASED; urgency=medium
+
+  [ Tiago Salem Herrmann ]
+  * ubuntu/history: add owner read access to
+    @{HOME}/.local/share/history-service/attachments/
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 08 Jan 2016 16:20:09 -0600
+
 apparmor-easyprof-ubuntu (16.04.2) xenial; urgency=medium
 
   * ubuntu/ubuntu-sdk:
