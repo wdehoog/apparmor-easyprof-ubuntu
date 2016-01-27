@@ -74,7 +74,7 @@
   /var/tmp/ r,
 
   # LP: #1260103
-  owner /run/shm/.org.chromium.Chromium.* rwk,
+  owner /{dev,run}/shm/.org.chromium.Chromium.* rwk,
 
   # LP: #1260090 - when this bug is fixed, oxide_renderer can become a
   # child profile of this profile, then we can use Cx here and Px in
@@ -156,7 +156,7 @@
     owner @{HOME}/.local/share/@{APP_PKGNAME}/** mrwkl,
 
     # LP: #1260103
-    /run/shm/.org.chromium.Chromium.* rwk,
+    /{dev,run}/shm/.org.chromium.Chromium.* rwk,
 
     # LP: #1260048
     owner @{HOME}/.pki/nssdb/ rw,
