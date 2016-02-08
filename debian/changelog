@@ -1,3 +1,10 @@
+apparmor-easyprof-ubuntu (16.04.4) UNRELEASED; urgency=medium
+
+  [ Jamie Strandboge ]
+  * adjust cpuinfo_max_freq access for newer kernels
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Mon, 08 Feb 2016 12:28:53 -0600
+
 apparmor-easyprof-ubuntu (16.04.3) xenial; urgency=medium
 
   [ Tiago Salem Herrmann ]
