@@ -1,3 +1,10 @@
+apparmor-easyprof-ubuntu (16.04.5) UNRELEASED; urgency=medium
+
+  [ Michi Henning ]
+  * Added ClientConfig to permitted dbus calls for apps using the thumbnailer.
+
+ -- Michi Henning <michi.henning@canonical.com>  Wed, 24 Feb 2016 13:32:48 +1000
+
 apparmor-easyprof-ubuntu (16.04.4) xenial; urgency=medium
 
   [ Jamie Strandboge ]
@@ -18,14 +25,6 @@ apparmor-easyprof-ubuntu (16.04.3) xenial; urgency=medium
     adjust symlinks (LP: #1538475)
 
  -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 27 Jan 2016 08:16:28 -0600
-
-apparmor-easyprof-ubuntu (16.04.2ubuntu1) UNRELEASED; urgency=medium
-
-  [ Michi Henning ]
-  * Added TraceClient and MaxBacklog to permitted dbus calls for
-    apps using the thumbnailer.
-
- -- Michi Henning <michi.henning@canonical.com>  Wed, 06 Jan 2016 10:55:32 +1000
 
 apparmor-easyprof-ubuntu (16.04.2) xenial; urgency=medium
 
