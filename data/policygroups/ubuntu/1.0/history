@@ -18,3 +18,5 @@ dbus (receive)
      bus=session
      path=/com/canonical/HistoryService/**
      peer=(label=unconfined),
+
+owner @{HOME}/.local/share/history-service/attachments/** r,

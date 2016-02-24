@@ -26,6 +26,11 @@ dbus (receive, send)
      bus=session
      path=/org/gnome/evolution/dataserver/CalendarView/**
      peer=(label=unconfined),
+dbus (receive, send)
+     bus=session
+     path=/org/gnome/evolution/dataserver/Subprocess{,/**}
+     interface=org.gnome.evolution.dataserver.Calendar
+     peer=(label=unconfined),
 
 # This interface was created specifically to allow alarms to confined apps
 dbus (receive, send)

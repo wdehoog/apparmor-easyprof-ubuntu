@@ -58,7 +58,7 @@
   # LP: #
   /sys/bus/pci/devices/ r,
   /sys/devices/system/cpu/ r,
-  /sys/devices/system/cpu/cpu[0-9]*/cpufreq/cpuinfo_max_freq r,
+  /sys/devices/system/cpu/cpu[0-9]*/cpufreq/{,policy[0-9]*/}cpuinfo_max_freq r,
   /sys/devices/pci[0-9]*/**/class r,
   /sys/devices/pci[0-9]*/**/device r,
   /sys/devices/pci[0-9]*/**/irq r,
@@ -74,7 +74,7 @@
   /var/tmp/ r,
 
   # LP: #1260103
-  owner /run/shm/.org.chromium.Chromium.* rwk,
+  owner /{dev,run}/shm/.org.chromium.Chromium.* rwk,
 
   # LP: #1260090 - when this bug is fixed, oxide_renderer can become a
   # child profile of this profile, then we can use Cx here and Px in
@@ -104,7 +104,7 @@
     owner @{PROC}/[0-9]*/task/ r,
     owner @{PROC}/[0-9]*/task/[0-9]*/stat r,
     /sys/devices/system/cpu/ r,
-    /sys/devices/system/cpu/cpu[0-9]*/cpufreq/cpuinfo_max_freq r,
+    /sys/devices/system/cpu/cpu[0-9]*/cpufreq/{,policy[0-9]*/}cpuinfo_max_freq r,
 
     #
     # chrome-sandbox specific
@@ -156,7 +156,7 @@
     owner @{HOME}/.local/share/@{APP_PKGNAME}/** mrwkl,
 
     # LP: #1260103
-    /run/shm/.org.chromium.Chromium.* rwk,
+    /{dev,run}/shm/.org.chromium.Chromium.* rwk,
 
     # LP: #1260048
     owner @{HOME}/.pki/nssdb/ rw,

@@ -1,3 +1,24 @@
+apparmor-easyprof-ubuntu (16.04.4) xenial; urgency=medium
+
+  [ Jamie Strandboge ]
+  * adjust cpuinfo_max_freq access for newer kernels
+  * ubuntu/calendar: update policy to account for newer EDS Subprocess path
+    on the org.gnome.evolution.dataserver.Calendar interface (LP: #1548888)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Tue, 23 Feb 2016 16:50:56 -0600
+
+apparmor-easyprof-ubuntu (16.04.3) xenial; urgency=medium
+
+  [ Tiago Salem Herrmann ]
+  * ubuntu/history: add owner read access to
+    @{HOME}/.local/share/history-service/attachments/
+
+  [ Jamie Strandboge ]
+  * ubuntu/webview: apply shm changes in last upload to previous policy and
+    adjust symlinks (LP: #1538475)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Wed, 27 Jan 2016 08:16:28 -0600
+
 apparmor-easyprof-ubuntu (16.04.2ubuntu1) UNRELEASED; urgency=medium
 
   [ Michi Henning ]
