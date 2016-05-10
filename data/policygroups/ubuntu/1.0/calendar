@@ -3,6 +3,8 @@
 #  is fixed, this can be moved out of reserved status.
 # Usage: reserved
 
+/etc/{,writable/}timezone r,
+
 # The gsettings entries for EDS aren't required for the calendar, so
 # just silence these
 # TODO: remove when we have gsettings mediation
