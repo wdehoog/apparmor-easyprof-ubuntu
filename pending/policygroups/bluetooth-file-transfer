@@ -1,0 +1,105 @@
+# Description: Use bluetooth between devices for file transfer. Can access
+# detailed information about interfaces, set discovery mode and initiate file
+# transfers
+# Usage: reserved
+#
+# NOTE: the name of this policy group may change. The policy is here for future
+# reference for designing safe bluez accesses
+
+# find the adapter
+dbus (send)
+    bus=system
+    path=/
+    interface=org.bluez.Manager
+    member="{DefaultAdapter,ListAdapters}"
+    peer=(name=org.bluez, label=unconfined),
+
+dbus (send)
+    bus=system
+    path=/
+    interface=org.freedesktop.DBus.ObjectManager
+    member=GetManagedObjects
+    peer=(name=org.bluez, label=unconfined),
+
+# Get methods allow everything. This leaks the MAC of the bluetooth device, the
+# hostname and the state of the device
+dbus (send)
+    bus=system
+    path=/org/bluez/hci[0-9]*
+    interface=org.freedesktop.DBus.Properties
+    member=Get
+    peer=(name=org.bluez, label=unconfined),
+
+# this allows putting a particular device in discovery mode,
+dbus (send)
+    bus=system
+    path=/org/bluez/hci[0-9]*
+    interface=org.bluez.Adapter[0-9]*
+    member="{Start,Stop}Discovery"
+    peer=(name=org.bluez, label=unconfined),
+
+# small info leak, possibly ok
+dbus (receive)
+    bus=system
+    path=/org/bluez/hci[0-9]*
+    interface=org.freedesktop.DBus.Properties
+    member=PropertiesChanged
+    peer=(label=unconfined),
+
+dbus (receive)
+    bus=system
+    path=/
+    interface=org.freedesktop.DBus.ObjectManager
+    member=InterfacesAdded
+    peer=(name=org.bluez, label=unconfined),
+
+dbus (send)
+    bus=system
+    path="/org/bluez/hci[0-9]*/dev_[0-9A-F][0-9A-F]_[0-9A-F][0-9A-F]_[0-9A-F][0-9A-F]_[0-9A-F][0-9A-F]_[0-9A-F][0-9A-F]_[0-9A-F][0-9A-F]"
+    interface=org.freedesktop.DBus.Properties
+    member=Get
+    peer=(name=org.bluez, label=unconfined),
+
+dbus (receive)
+    bus=system
+    path="/org/bluez/hci[0-9]*/dev_[0-9A-F][0-9A-F]_[0-9A-F][0-9A-F]_[0-9A-F][0-9A-F]_[0-9A-F][0-9A-F]_[0-9A-F][0-9A-F]_[0-9A-F][0-9A-F]"
+    interface=org.freedesktop.DBus.Properties
+    member=PropertiesChanged
+    peer=(label=unconfined),
+
+# detecting another device
+dbus (receive)
+    bus=system
+    path=/
+    interface=org.freedesktop.DBus.Properties
+    member=InterfacesAdded
+    peer=(label=unconfined),
+
+dbus (receive)
+    bus=system
+    path=/
+    interface=org.freedesktop.DBus.ObjectManager
+    member=InterfacesAdded
+    peer=(label=unconfined),
+
+# the actual transfer
+dbus (send)
+    bus=session
+    path=/org/bluez/obex
+    interface=org.bluez.obex.Client[0-9]*
+    member="{Create,Remove}Session"
+    peer=(name=org.bluez.obex, label=unconfined),
+
+dbus (receive)
+    bus=system
+    path=/
+    interface=org.freedesktop.DBus.ObjectManager
+    member=InterfacesRemoved
+    peer=(label=unconfined),
+
+dbus (send)
+    bus=session
+    path=/org/bluez/obex/client/session[0-9]*
+    interface=org.bluez.obex.ObjectPush[0-9]*
+    member=SendFile
+    peer=(name=org.bluez.obex, label=unconfined),

@@ -1,0 +1,97 @@
+# Description: Use bluetooth networking between devices. Can access detailed
+#  information about interfaces, set properties, add profiles and set discovery
+#  mode
+# Usage: reserved
+#
+# NOTE: the name of this policy group may change. The policy is here for future
+# reference for designing safe bluez accesses
+
+network bluetooth stream,
+network bluetooth seqpacket,
+
+# bluetooth helper
+/usr/lib/@{multiarch}/qt5/bin/sdpscanner rmix,
+
+# find the adapter
+dbus (send)
+    bus=system
+    path=/
+    interface=org.bluez.Manager
+    member="{DefaultAdapter,ListAdapters}"
+    peer=(name=org.bluez, label=unconfined),
+
+dbus (send)
+    bus=system
+    path=/
+    interface=org.freedesktop.DBus.ObjectManager
+    member=GetManagedObjects
+    peer=(name=org.bluez, label=unconfined),
+
+# Get methods allow everything. This leaks the MAC of the bluetooth device, the
+# hostname and the state of the device
+dbus (send)
+    bus=system
+    path=/org/bluez/hci[0-9]*
+    interface=org.freedesktop.DBus.Properties
+    member=Get
+    peer=(name=org.bluez, label=unconfined),
+
+#
+# server
+#
+
+# this allows setting any property on any interface
+dbus (send)
+    bus=system
+    path=/org/bluez/hci[0-9]*
+    interface=org.freedesktop.DBus.Properties
+    member=Set
+    peer=(name=org.bluez, label=unconfined),
+
+# register a profile
+dbus (send)
+    bus=system
+    path=/org/bluez
+    interface=org.bluez.ProfileManager[0-9]*
+    member="{RegisterProfile,UnregisterProfile}"
+    peer=(name=org.bluez, label=unconfined),
+
+# small info leak, possibly ok
+dbus (receive)
+    bus=system
+    path=/org/bluez/hci[0-9]*
+    interface=org.freedesktop.DBus.Properties
+    member=PropertiesChanged
+    peer=(label=unconfined),
+
+#
+# client
+#
+# this allows putting a particular device in discovery mode,
+dbus (send)
+    bus=system
+    path=/org/bluez/hci[0-9]*
+    interface=org.bluez.Adapter[0-9]*
+    member="{Start,Stop}Discovery"
+    peer=(name=org.bluez, label=unconfined),
+
+dbus (receive)
+    bus=system
+    path=/
+    interface=org.freedesktop.DBus.ObjectManager
+    member="{InterfacesAdded,InterfacesRemoved}"
+    peer=(label=unconfined),
+
+dbus (send)
+    bus=system
+    path="/org/bluez/hci[0-9]*/dev_[0-9A-F][0-9A-F]_[0-9A-F][0-9A-F]_[0-9A-F][0-9A-F]_[0-9A-F][0-9A-F]_[0-9A-F][0-9A-F]_[0-9A-F][0-9A-F]"
+    interface=org.freedesktop.DBus.Properties
+    member=Get
+    peer=(name=org.bluez, label=unconfined),
+
+dbus (receive)
+    bus=system
+    path="/org/bluez/hci[0-9]*/dev_[0-9A-F][0-9A-F]_[0-9A-F][0-9A-F]_[0-9A-F][0-9A-F]_[0-9A-F][0-9A-F]_[0-9A-F][0-9A-F]_[0-9A-F][0-9A-F]"
+    interface=org.freedesktop.DBus.Properties
+    member=PropertiesChanged
+    peer=(label=unconfined),

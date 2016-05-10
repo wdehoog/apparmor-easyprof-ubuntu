@@ -1,0 +1,27 @@
+# Description: Use bluetooth (bluez5) as an administrator.
+# Usage: reserved
+#
+# Note: this policy is completed unrestricted and should only be used with
+# trusted applications. It is provided for administration of bluetooth and as
+# a stepping stone towards developing a safe bluetooth API all apps can access.
+
+network bluetooth,
+
+# bluetooth helper
+/usr/lib/@{multiarch}/qt5/bin/sdpscanner rmix,
+
+# bluez is on the system bus, but obex is on session. Allow connecting to any
+# unconfined service as org.bluez or org.bluez.*
+dbus (receive, send)
+    peer=(name="org.bluez{,.*}", label=unconfined),
+dbus (receive)
+    path=/org/bluez/**
+    peer=(label=unconfined),
+
+# this path is not bluez specific, but required
+dbus (receive)
+    bus=system
+    path=/
+    interface="org.freedesktop.DBus.{ObjectManager,Properties}"
+    member="{InterfacesAdded,InterfacesRemoved}"
+    peer=(label=unconfined),
