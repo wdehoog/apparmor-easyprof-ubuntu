@@ -230,6 +230,38 @@
   deny dbus (bind)
        name="org.freedesktop.Application",
 
+  # Allow access to specific paste buffers from the PasteBoard
+  dbus (receive, send)
+       bus=session
+       interface="com.ubuntu.content.dbus.Paste"
+       path=/pastes/@{APP_ID_DBUS}/*
+       peer=(label=unconfined),
+  dbus (receive, send)
+       bus=session
+       interface="com.ubuntu.content.dbus.Service"
+       member="CreatePaste"
+       peer=(label=unconfined),
+  dbus (receive, send)
+       bus=session
+       interface="com.ubuntu.content.dbus.Service"
+       member="GetPasteData"
+       peer=(label=unconfined),
+  dbus (receive, send)
+       bus=session
+       interface="com.ubuntu.content.dbus.Service"
+       member="GetLatestPasteData"
+       peer=(label=unconfined),
+  dbus (receive, send)
+       bus=session
+       interface="com.ubuntu.content.dbus.Service"
+       member="PasteFormats"
+       peer=(label=unconfined),
+  dbus (receive)
+       bus=session
+       interface="com.ubuntu.content.dbus.Service"
+       member="PasteFormatsChanged"
+       peer=(label=unconfined),
+
   #
   # end DBus rules common for all apps
   #
