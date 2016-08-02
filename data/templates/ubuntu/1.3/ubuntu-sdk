@@ -230,12 +230,7 @@
   deny dbus (bind)
        name="org.freedesktop.Application",
 
-  # Allow access to specific paste buffers from the PasteBoard
-  dbus (receive, send)
-       bus=session
-       interface="com.ubuntu.content.dbus.Paste"
-       path=/pastes/@{APP_ID_DBUS}/*
-       peer=(label=unconfined),
+  # Allow access to the PasteBoard
   dbus (receive, send)
        bus=session
        interface="com.ubuntu.content.dbus.Service"
