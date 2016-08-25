@@ -162,8 +162,7 @@
 
   # libhybris
   /{,var/}run/shm/hybris_shm_data rw, # FIXME: LP: #1226569 (make app-specific)
-  /usr/lib/@{multiarch}/libhybris/*.so mr,
-  /usr/lib/@{multiarch}/libhybris/linker/**.so mr,
+  /usr/lib/@{multiarch}/libhybris/**.so mr,
   /{,android/}system/build.prop r,
   # These libraries can be in any of:
   #  /vendor/lib{,64}
