@@ -1,3 +1,11 @@
+apparmor-easyprof-ubuntu (16.10.2) UNRELEASED; urgency=medium
+
+  * ubuntu/webview: update to allow access to the new app-specific shared
+    memory files that will be used by Oxide 1.17.5, 1.18, and newer
+    (LP: #1260103)
+
+ -- Tyler Hicks <tyhicks@canonical.com>  Thu, 25 Aug 2016 12:03:15 -0500
+
 apparmor-easyprof-ubuntu (16.10.1) yakkety; urgency=medium
 
   * add 16.10 policy

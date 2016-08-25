@@ -18,8 +18,8 @@
   # chrome_sandbox. Ideally, chrome-sandbox and oxide-renderer would ship
   # as standalone profiles and we would just Px/px to them, but this is not
   # practical because oxide-renderer needs to access app-specific files
-  # and shm files (when 1260103 is fixed). For now, have a single helper
-  # profile for chrome-sandbox and oxide-renderer.
+  # and shm files. For now, have a single helper profile for chrome-sandbox and
+  # oxide-renderer.
   /usr/lib/@{multiarch}/oxide-qt/oxide-renderer Cxmr -> oxide_helper,
   /usr/lib/@{multiarch}/oxide-qt/chrome-sandbox cxmr -> oxide_helper,
 
@@ -74,15 +74,22 @@
   /var/tmp/ r,
 
   # LP: #1260103
+  # old oxide shm file which is not app-specific
+  #
+  # TODO: Remove rule once we're only using oxide 1.17.5, 1.18, or newer
   owner /{dev,run}/shm/.org.chromium.Chromium.* rwk,
+
+  # app-specific oxide shm file, as used in oxide 1.17.5, 1.18, and newer
+  owner /{dev,run}/shm/@{APP_PKGNAME}.oxide/ rw,
+  owner /{dev,run}/shm/@{APP_PKGNAME}.oxide/** rwk,
 
   # LP: #1260090 - when this bug is fixed, oxide_renderer can become a
   # child profile of this profile, then we can use Cx here and Px in
   # chrome_sandbox. Ideally, chrome-sandbox and oxide-renderer would ship
   # as standalone profiles and we would just Px/px to them, but this is not
   # practical because oxide-renderer needs to access app-specific files
-  # and shm files (when 1260103 is fixed). For now, have a single helper
-  # profile for chrome-sandbox and oxide-renderer.
+  # and shm files. For now, have a single helper profile for chrome-sandbox and
+  # oxide-renderer.
   profile oxide_helper (attach_disconnected) {
     #
     # Shared by chrome-sandbox and oxide-helper
@@ -156,7 +163,14 @@
     owner @{HOME}/.local/share/@{APP_PKGNAME}/** mrwkl,
 
     # LP: #1260103
+    # old oxide shm file which is not app-specific
+    #
+    # TODO: Remove rule once we're only using oxide 1.17.5, 1.18, or newer
     /{dev,run}/shm/.org.chromium.Chromium.* rwk,
+
+    # app-specific oxide shm file, as used in oxide 1.17.5, 1.18, and newer
+    /{dev,run}/shm/@{APP_PKGNAME}.oxide/ rw,
+    /{dev,run}/shm/@{APP_PKGNAME}.oxide/** rwk,
 
     # LP: #1260048
     owner @{HOME}/.pki/nssdb/ rw,
