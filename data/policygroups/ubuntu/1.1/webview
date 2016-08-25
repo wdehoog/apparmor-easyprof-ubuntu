@@ -90,9 +90,9 @@
     #include <abstractions/base>
 
     # So long as we don't give /dev/binder, this should be 'ok'
-    /{,android/}vendor/lib/*.so        mr,
-    /{,android/}system/lib/*.so        mr,
-    /{,android/}system/vendor/lib/*.so mr,
+    /{,android/}vendor/lib{,64}/*.so        mr,
+    /{,android/}system/lib{,64}/*.so        mr,
+    /{,android/}system/vendor/lib{,64}/*.so mr,
     /{,android/}system/build.prop      r,
     /dev/socket/property_service rw, # attach_disconnected path
 
