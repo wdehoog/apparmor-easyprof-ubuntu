@@ -212,26 +212,31 @@
   dbus (receive, send)
        bus=session
        interface="com.ubuntu.content.dbus.Service"
+       path="/"
        member="CreatePaste"
        peer=(label=unconfined),
   dbus (receive, send)
        bus=session
        interface="com.ubuntu.content.dbus.Service"
+       path="/"
        member="GetPasteData"
        peer=(label=unconfined),
   dbus (receive, send)
        bus=session
        interface="com.ubuntu.content.dbus.Service"
+       path="/"
        member="GetLatestPasteData"
        peer=(label=unconfined),
   dbus (receive, send)
        bus=session
        interface="com.ubuntu.content.dbus.Service"
+       path="/"
        member="PasteFormats"
        peer=(label=unconfined),
   dbus (receive)
        bus=session
        interface="com.ubuntu.content.dbus.Service"
+       path="/"
        member="PasteFormatsChanged"
        peer=(label=unconfined),
 
