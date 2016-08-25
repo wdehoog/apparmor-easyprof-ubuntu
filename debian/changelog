@@ -1,6 +1,5 @@
 apparmor-easyprof-ubuntu (16.10.2) UNRELEASED; urgency=medium
 
-
   [ You-Sheng Yang ]
   * add lib64 for 64bit android (LP: #1615923)
 
