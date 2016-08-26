@@ -1,3 +1,11 @@
+apparmor-easyprof-ubuntu (16.10.3) yakkety; urgency=medium
+
+  [ Michi Henning ]
+  * add ClientConfig to list of allowed methods for applications using the
+    thumbnailer (LP: #1528058)
+
+ -- Jamie Strandboge <jamie@ubuntu.com>  Fri, 26 Aug 2016 10:01:48 -0500
+
 apparmor-easyprof-ubuntu (16.10.2) yakkety; urgency=medium
 
   [ You-Sheng Yang ]

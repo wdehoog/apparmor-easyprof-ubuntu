@@ -38,7 +38,7 @@ dbus (send)
 dbus (send)
      bus=session
      path="/com/canonical/Thumbnailer"
-     member={GetAlbumArt,GetArtistArt}
+     member={GetAlbumArt,GetArtistArt,ClientConfig}
      peer=(label=unconfined),
 
 # Allow communications with mediascanner2
