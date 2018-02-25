@@ -412,6 +412,7 @@
   /usr/share/qtchooser/ r,
   /usr/share/qtchooser/** r,
   /usr/lib/@{multiarch}/qt5/bin/qmlscene ixr,
+  /usr/lib/qt5/bin/qmlscene ixr,
 
   owner @{HOME}/.config/{UITK,ubuntu-ui-toolkit}/theme.ini rk,
   audit deny @{HOME}/.config/{UITK,ubuntu-ui-toolkit}/theme.ini w,
