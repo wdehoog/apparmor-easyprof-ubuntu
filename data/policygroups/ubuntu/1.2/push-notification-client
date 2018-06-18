@@ -13,6 +13,11 @@ dbus (receive, send)
      path=/com/ubuntu/Postal/@{APP_PKGNAME_DBUS}{,/**}
      peer=(label=unconfined),
 
+dbus (receive, send)
+     bus=session
+     path=/com/ubuntu/connectivity1/NetworkingStatus
+     peer=(label=unconfined),
+
 # Some push helpers are written in python. This isn't strictly allowed since
 # frameworks don't support yet, but silence these to avoid confusion
 deny /usr/local/lib/python*/** r,
