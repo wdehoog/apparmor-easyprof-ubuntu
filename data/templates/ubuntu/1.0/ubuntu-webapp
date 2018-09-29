@@ -385,6 +385,14 @@
   # works correctly.
   deny /usr/lib/@{multiarch}/oxide-qt/** r,
 
+  #
+  # Morph
+  #  
+  /usr/share/qt5/resources/ r,
+  /usr/share/qt5/resources/** r,
+  /usr/share/morph-browser/ r,
+  /usr/share/morph-browser/** r,
+
   # Special API for the webapp-container to prepopulate the webapp's cookie jar
   # with online accounts' cookie for the account of the site of the webapp
   dbus (receive, send)
