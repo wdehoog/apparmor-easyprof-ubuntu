@@ -384,6 +384,15 @@
   /usr/share/qtdeclarative5-ubuntu-ui-extras-browser-plugin/** r,
   /usr/share/qtdeclarative5-ubuntu-web-plugin/ r,
   /usr/share/qtdeclarative5-ubuntu-web-plugin/** r,
+
+  #
+  # Morph
+  #  
+  /usr/share/qt5/resources/ r,
+  /usr/share/qt5/resources/** r,
+  /usr/share/morph-browser/ r,
+  /usr/share/morph-browser/** r,
+
   # TODO: investigate child profile
   /usr/lib/@{multiarch}/qt5/libexec/QtWebProcess rmix,
   /usr/lib/@{multiarch}/gstreamer*/gstreamer*/gst-plugin-scanner rix,

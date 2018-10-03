@@ -447,6 +447,12 @@
 
   /usr/lib/@{multiarch}/gstreamer*/gstreamer*/gst-plugin-scanner rix,
 
+  #
+  # Morph
+  #  
+  /usr/share/qt5/resources/ r,
+  /usr/share/qt5/resources/** r,
+
   # GStreamer binary registry - hybris pulls this in for everything now, not
   # just audio
   owner @{HOME}/.gstreamer*/registry.*.bin*       r,
