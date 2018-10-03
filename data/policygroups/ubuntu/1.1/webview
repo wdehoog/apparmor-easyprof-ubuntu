@@ -187,7 +187,7 @@
     # LP: #1260048
     owner @{HOME}/.pki/nssdb/ rw,
     owner @{HOME}/.pki/nssdb/** rwk,
-    
+
     # LP: #1260044
     deny /usr/lib/@{multiarch}/oxide-qt/locales/ w,
     
