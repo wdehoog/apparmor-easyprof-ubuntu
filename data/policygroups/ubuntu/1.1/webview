@@ -16,8 +16,6 @@
   /usr/share/morph-browser/** r,
   /usr/bin/morph-browser r,
 
-  /usr/lib/@{multiarch}/qt5/libexec/QtWebEngineProcess Cxmr -> oxide_helper,
-
   ptrace (read, trace) peer=@{profile_name},
   signal peer=@{profile_name}//oxide_helper,
 
@@ -33,6 +31,10 @@
   # oxide-renderer.
   /usr/lib/@{multiarch}/oxide-qt/oxide-renderer Cxmr -> oxide_helper,
   /usr/lib/@{multiarch}/oxide-qt/chrome-sandbox cxmr -> oxide_helper,
+
+  # Due to a bug on hammerhead, we will let this inherit current confinement
+  # insted of exec to child profile TODO: fix this back to Cxmr
+  /usr/lib/@{multiarch}/qt5/libexec/QtWebEngineProcess ixmr -> oxide_helper,
 
   /usr/lib/@{multiarch}/oxide-qt/* r,
   @{PROC}/[0-9]*/task/[0-9]*/stat r,
