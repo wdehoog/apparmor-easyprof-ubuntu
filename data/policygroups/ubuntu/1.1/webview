@@ -39,6 +39,15 @@
   /usr/lib/@{multiarch}/oxide-qt/* r,
   @{PROC}/[0-9]*/task/[0-9]*/stat r,
 
+  # QtWebEngine needs some read acces to proc
+  @{PROC}/ r,
+  @{PROC}/[0-9]*/ r,
+  @{PROC}/[0-9]*/fd/ r,
+  @{PROC}/[0-9]*/auxv r,
+  @{PROC}/[0-9]*/mem r,
+  @{PROC}/[0-9]*/status r,
+  @{PROC}/[0-9]*/task/ r,
+
   # LP: #1275917 (not a problem, but unnecessary)
   /usr/share/glib-2.0/schemas/gschemas.compiled r,
 
