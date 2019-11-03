@@ -7,3 +7,10 @@ dbus (send)
      path=/com/canonical/usensord/*
      interface=com.canonical.usensord.*
      peer=(label=unconfined),
+
+dbus (send)
+     bus=system
+     interface=local.*
+     peer=(name=com.nokia.SensorService, label=unconfined),
+
+/run/sensord.sock rw,
