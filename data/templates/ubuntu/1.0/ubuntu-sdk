@@ -475,7 +475,7 @@
   deny /{,var/}run/user/*/orcexec* w,
   deny @{HOME}/orcexec* w,
 
-  /{,android/}system/etc/media_codecs.xml r,
+  /{,android/}system/etc/media_codecs{,_*}.xml r,
   /etc/wildmidi/wildmidi.cfg r,
 
   # Don't allow plugins in webviews for now
