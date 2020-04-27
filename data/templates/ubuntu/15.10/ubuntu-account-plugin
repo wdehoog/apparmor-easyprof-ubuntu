@@ -219,6 +219,11 @@
   /usr/lib/@{multiarch}/qt5/bin/qmlscene ixr,
   /usr/lib/qt5/bin/qmlscene ixr,
 
+  #
+  # Compiled QML files from the system should always be executable
+  #
+  /usr/lib/@{multiarch}/qt5/qml/**/*.qmlc m,
+
   owner @{HOME}/.config/{UITK,ubuntu-ui-toolkit}/theme.ini rk,
   audit deny @{HOME}/.config/{UITK,ubuntu-ui-toolkit}/theme.ini w,
 

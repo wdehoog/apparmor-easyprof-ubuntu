@@ -404,6 +404,11 @@
   #
   /sys/class/timed_output/vibrator/enable rw,
   /sys/devices/virtual/timed_output/vibrator/enable rw,
+  dbus (send)
+       bus=session
+       path=/com/lomiri/hfd
+       interface=com.lomiri.hfd.Vibrator
+       peer=(label=unconfined),
 
   #
   # apps may always use the accelerometer and orientation sensor
@@ -420,6 +425,11 @@
 
   owner @{HOME}/.config/{UITK,ubuntu-ui-toolkit}/theme.ini rk,
   audit deny @{HOME}/.config/{UITK,ubuntu-ui-toolkit}/theme.ini w,
+
+  #
+  # Compiled QML files from the system should always be executable
+  #
+  /usr/lib/@{multiarch}/qt5/qml/**/*.qmlc m,
 
   #
   # cordova-ubuntu
