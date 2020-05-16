@@ -222,6 +222,11 @@
   owner @{HOME}/.config/{UITK,ubuntu-ui-toolkit}/theme.ini rk,
   audit deny @{HOME}/.config/{UITK,ubuntu-ui-toolkit}/theme.ini w,
 
+  #
+  # Compiled QML files from the system should always be executable
+  #
+  /usr/lib/@{multiarch}/qt5/qml/**/*.qmlc m,
+
   # Launching under upstart requires this
   /usr/bin/qtchooser rmix,
 
